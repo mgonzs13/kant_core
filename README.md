@@ -1,5 +1,9 @@
 # KANT (Knowledge mAnagemeNT)
 
+<p align="center">
+  <img src="./images/logo.png" width="50%" />
+</p>
+
 This is a Python tool to manage PDDL-based knowledge. It is based on several software design patterns (DTO, DAO, Factory).
 
 ## Table of Contents
