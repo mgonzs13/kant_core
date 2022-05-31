@@ -23,8 +23,8 @@ class TestPredicateDao(unittest.TestCase):
             "battery_level", [robot_type], is_numeric=True)
 
     def tearDown(self):
-        self.fluent_dao.delete_all()
         self.type_dao.delete_all()
+        self.fluent_dao.delete_all()
 
     def test_fluent_dao_save_true(self):
         result = self.fluent_dao._save(self.fluent_dto)

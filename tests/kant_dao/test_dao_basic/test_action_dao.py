@@ -63,8 +63,8 @@ class TestActionDao(unittest.TestCase):
             [self.effect_1, self.effect_2, self.effect_3])
 
     def tearDown(self):
-        self.action_dao.delete_all()
         self.fluent_dao.delete_all()
+        self.action_dao.delete_all()
         self.type_dao.delete_all()
 
     def test_action_dao_save_true(self):

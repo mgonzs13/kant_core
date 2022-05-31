@@ -1,7 +1,6 @@
 
 """ Mongo Type Dao """
 
-from re import T
 from typing import List
 
 from kant.kant_dao.dao_interface import TypeDao
@@ -207,6 +206,14 @@ class MongoTypeDao(TypeDao, MongoDao):
         # check if type exists
         if type_model:
             type_model.delete()
+
+            # delete childs
+            child_models = TypeModel.objects(
+                father=type_dto.get_name())
+
+            for child in child_models:
+                child.delete()
+
             return True
 
         return False

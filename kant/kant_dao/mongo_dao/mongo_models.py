@@ -11,7 +11,7 @@ class TypeModel(mongoengine.Document):
     meta = {"collection": "type"}
     name = mongoengine.StringField(primary_key=True)
     father = mongoengine.ReferenceField(
-        "self", reverse_delete_rule=mongoengine.CASCADE)
+        "self", reverse_delete_rule=mongoengine.DO_NOTHING)
 
 
 class ObjectModel(mongoengine.Document):

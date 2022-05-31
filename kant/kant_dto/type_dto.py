@@ -33,11 +33,11 @@ class TypeDto(Dto):
 
         self._name = name
 
-    def get_father(self) -> str:
+    def get_father(self) -> "TypeDto":
         """ father getter
 
         Returns:
-            str: name
+            TypeDto: name
         """
 
         return self._father
@@ -46,7 +46,7 @@ class TypeDto(Dto):
         """ father setter
 
         Args:
-            name (str): name
+            name (TypeDto): name
         """
 
         self._father = father

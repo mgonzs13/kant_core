@@ -35,9 +35,9 @@ class TestFactDao(unittest.TestCase):
             self.battery_level, [self.rb1], value=100)
 
     def tearDown(self):
-        self.fact_dao.delete_all()
         self.object_dao.delete_all()
         self.fluent_dao.delete_all()
+        self.fact_dao.delete_all()
         self.type_dao.delete_all()
 
     def test_fact_dao_save_true(self):

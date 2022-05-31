@@ -19,8 +19,8 @@ class TestObjectDao(unittest.TestCase):
         self.object_dto = ObjectDto(type_dto, "rb1")
 
     def tearDown(self):
-        self.object_dao.delete_all()
         self.type_dao.delete_all()
+        self.object_dao.delete_all()
 
     def test_object_dao_save_true(self):
         result = self.object_dao._save(self.object_dto)
