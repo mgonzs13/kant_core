@@ -11,8 +11,7 @@ from kant.kant_dao.mongo_dao import (
 )
 
 from kant.kant_dao.mongo_dao.mongo_models import (
-    FactModel,
-    FluentModel
+    FactModel
 )
 
 from kant.kant_dto import FactDto
@@ -68,14 +67,20 @@ class MongoFactDao(FactDao, MongoDao):
         """
 
         object_list = []
+        type_dict = {}
 
         fluent_dto = self._me_fluent_dao._model_to_dto(
             fact_model.fluent)
+
+        for type_dto in fluent_dto.get_types():
+            type_dict[type_dto.get_name()] = type_dto
 
         for object_model in fact_model.arguments:
 
             object_dto = self._me_object_dao._model_to_dto(
                 object_model)
+
+            object_dto.set_type(type_dict[object_dto.get_type().get_name()])
 
             object_list.append(object_dto)
 

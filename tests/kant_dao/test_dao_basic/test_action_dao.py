@@ -185,29 +185,6 @@ class TestActionDao(unittest.TestCase):
 )""",
                          str(self.action_dto))
 
-    def test_action_dao_update_fluent_type_true(self):
-        self.action_dao._save(self.action_dto)
-
-        self.action_dto = self.action_dao.get("navigation")
-        self.action_dto.get_conditions()[0].get_fluent().set_name("bot_at")
-        self.action_dto.get_parameters()[0].get_type().set_name("bot")
-
-        self.assertEqual("""\
-(:durative-action navigation
-\t:parameters ( ?r - bot ?s - wp ?d - wp)
-\t:duration (= ?duration 10)
-\t:condition (and
-\t\t(at start (bot_at ?r ?s))
-\t\t(at start (> (battery_level ?r) 30.00))
-\t)
-\t:effect (and
-\t\t(at start (not (bot_at ?r ?s)))
-\t\t(at end (bot_at ?r ?d))
-\t\t(at end (decrease (battery_level ?r) 10.00))
-\t)
-)""",
-                         str(self.action_dto))
-
     def test_action_dao_update_flase(self):
         result = self.action_dao._update(self.action_dto)
         self.assertFalse(result)
@@ -266,3 +243,26 @@ class TestActionDao(unittest.TestCase):
         self.assertTrue(result)
         self.action_dto = self.action_dao.get("navigation")
         self.assertIsNone(self.action_dto)
+
+    def test_action_dao_modify_fluent_type(self):
+        self.action_dao._save(self.action_dto)
+
+        self.action_dto = self.action_dao.get("navigation")
+        self.action_dto.get_conditions()[0].get_fluent().set_name("bot_at")
+        self.action_dto.get_parameters()[0].get_type().set_name("bot")
+
+        self.assertEqual("""\
+(:durative-action navigation
+\t:parameters ( ?r - bot ?s - wp ?d - wp)
+\t:duration (= ?duration 10)
+\t:condition (and
+\t\t(at start (bot_at ?r ?s))
+\t\t(at start (> (battery_level ?r) 30.00))
+\t)
+\t:effect (and
+\t\t(at start (not (bot_at ?r ?s)))
+\t\t(at end (bot_at ?r ?d))
+\t\t(at end (decrease (battery_level ?r) 10.00))
+\t)
+)""",
+                         str(self.action_dto))

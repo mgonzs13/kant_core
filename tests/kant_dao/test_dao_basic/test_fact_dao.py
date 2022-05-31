@@ -169,3 +169,9 @@ class TestFactDao(unittest.TestCase):
         self.fact_dto = self.fact_dao.get_by_fluent(
             "robot_at")
         self.assertEqual(0, len(self.fact_dto))
+
+    def test_fact_dao_modify_type(self):
+        self.fact_dao.save(self.fact_dto)
+        self.fact_dto = self.fact_dao.get_by_fluent("robot_at")[0]
+        self.fact_dto.get_fluent().get_types()[0].set_name("bot")
+        self.assertEqual("rb1 - bot", str(self.fact_dto.get_objects()[0]))
