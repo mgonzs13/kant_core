@@ -1,8 +1,5 @@
 import unittest
-from kant.kant_dao.dao_factory import (
-    DaoFactoryMethod,
-    DaoFamilies
-)
+from kant.kant_dao import DaoFactoryMethod
 from kant.kant_dto import (
     TypeDto,
     ObjectDto,
@@ -14,9 +11,7 @@ from kant.kant_dto import (
 class TestFactDao(unittest.TestCase):
 
     def setUp(self):
-        dao_factory_method = DaoFactoryMethod()
-        dao_factory = dao_factory_method.create_dao_factory(
-            DaoFamilies.MONGO)
+        dao_factory = DaoFactoryMethod.get_dao_factory()
 
         self.type_dao = dao_factory.create_type_dao()
         self.object_dao = dao_factory.create_object_dao()
@@ -40,10 +35,10 @@ class TestFactDao(unittest.TestCase):
             self.battery_level, [self.rb1], value=100)
 
     def tearDown(self):
+        self.fact_dao.delete_all()
         self.object_dao.delete_all()
         self.fluent_dao.delete_all()
         self.type_dao.delete_all()
-        self.fact_dao.delete_all()
 
     def test_fact_dao_save_true(self):
         result = self.fact_dao._save(self.fact_dto)

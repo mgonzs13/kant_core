@@ -1,8 +1,6 @@
 import unittest
-from kant.kant_dao.dao_factory import (
-    DaoFactoryMethod,
-    DaoFamilies
-)
+from kant.kant_dao import DaoFactoryMethod
+from kant.kant_dao.dao_interface.dao import Dao
 from kant.kant_dto import (
     TypeDto,
     ObjectDto
@@ -12,17 +10,17 @@ from kant.kant_dto import (
 class TestObjectDao(unittest.TestCase):
 
     def setUp(self):
-        dao_factory_method = DaoFactoryMethod()
-        dao_factory = dao_factory_method.create_dao_factory(
-            DaoFamilies.MONGO)
+        dao_factory = DaoFactoryMethod.get_dao_factory()
 
         self.object_dao = dao_factory.create_object_dao()
+        self.type_dao = dao_factory.create_type_dao()
 
         type_dto = TypeDto("robot", father=TypeDto("object"))
         self.object_dto = ObjectDto(type_dto, "rb1")
 
     def tearDown(self):
         self.object_dao.delete_all()
+        self.type_dao.delete_all()
 
     def test_object_dao_save_true(self):
         result = self.object_dao._save(self.object_dto)

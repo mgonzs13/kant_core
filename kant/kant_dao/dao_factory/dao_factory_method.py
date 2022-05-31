@@ -12,29 +12,48 @@ from kant.kant_dao.dao_factory.dao_factories import (
 class DaoFactoryMethod:
     """ Dao Factory of Factories Class """
 
-    def __init__(self):
-        self.dao_families = DaoFamilies
-        self.__families_to_factory = {
-            self.dao_families.MONGO: MongoDaoFactory
-        }
+    __shared_dao_factory: DaoFactory = None
 
-    def create_dao_factory(self, family: int, **kwargs) -> DaoFactory:
-        """ create a pddl dao factory of a given family
+    def __init__(self, family: int, **kwargs):
 
-        Args:
-            family (int): number of the pddl dao family to create
+        if not DaoFactoryMethod.__shared_dao_factory is None:
+            raise Exception("This class is a singleton")
+        else:
+
+            self.__families_to_factory = {
+                DaoFamilies.MONGO: MongoDaoFactory
+            }
+
+            args_dict = {}
+
+            dao_factory = self.__families_to_factory[family]
+            init_args = list(dao_factory.__init__.__code__.co_varnames)
+
+            for key, value in kwargs.items():
+                if key in init_args:
+                    args_dict[key] = value
+
+            DaoFactoryMethod.__shared_dao_factory = dao_factory(**args_dict)
+
+    @staticmethod
+    def get_dao_factory() -> DaoFactory:
+        """ Static Access Method
+            get the dao factory created
 
         Returns:
-            DaoFactory: pddl dao factory
+            DaoFactory: dao factory
         """
 
-        args_dict = {}
+        if DaoFactoryMethod.__shared_dao_factory is None:
+            raise Exception("You must instanciate DaoFactoryMethod first")
 
-        dao_factory = self.__families_to_factory[family]
-        init_args = list(dao_factory.__init__.__code__.co_varnames)
+        return DaoFactoryMethod.__shared_dao_factory
 
-        for key, value in kwargs.items():
-            if key in init_args:
-                args_dict[key] = value
+    @staticmethod
+    def clear_dao_factory() -> None:
+        """ 
+            Static Access Method
+            clear the dao factory
+        """
 
-        return dao_factory(**args_dict)
+        DaoFactoryMethod.__shared_dao_factory = None

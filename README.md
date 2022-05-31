@@ -77,11 +77,8 @@ from kant.kant_dto import (
     ActionDto
 )
 
-dao_factory_method = DaoFactoryMethod()
-uri = "mongodb://localhost:27017/kant"
-dao_family = DaoFamilies.MONGO
-dao_factory = dao_factory_method.create_dao_factory(dao_family,
-                                                    uri=uri)
+DaoFactoryMethod(DaoFamilies.MONGO, uri="mongodb://localhost:27017/kant")
+dao_factory = DaoFactoryMethod.get_dao_factory()
 
 # creating DAOs
 type_dao = dao_factory.create_type_dao()

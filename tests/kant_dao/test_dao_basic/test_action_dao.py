@@ -1,9 +1,5 @@
 import unittest
-from kant.kant_dao.dao_factory import (
-    DaoFactoryMethod,
-    DaoFamilies
-)
-
+from kant.kant_dao import DaoFactoryMethod
 from kant.kant_dto import (
     TypeDto,
     ObjectDto,
@@ -16,9 +12,7 @@ from kant.kant_dto import (
 class TestActionDao(unittest.TestCase):
 
     def setUp(self):
-        dao_factory_method = DaoFactoryMethod()
-        dao_factory = dao_factory_method.create_dao_factory(
-            DaoFamilies.MONGO)
+        dao_factory = DaoFactoryMethod.get_dao_factory()
 
         self.type_dao = dao_factory.create_type_dao()
         self.fluent_dao = dao_factory.create_fluent_dao()
