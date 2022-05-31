@@ -4,11 +4,11 @@
 from mongoengine import disconnect, connect
 
 from kant.kant_dao.mongo_dao import (
-    MongoPddlTypeDao,
-    MongoPddlObjectDao,
-    MongoPddlPredicateDao,
-    MongoPddlPropositionDao,
-    MongoPddlActionDao
+    MongoTypeDao,
+    MongoObjectDao,
+    MongoFluentDao,
+    MongoFactDao,
+    MongoActionDao
 )
 
 from kant.kant_dao.dao_factory.dao_factories.dao_factory import DaoFactory
@@ -17,7 +17,7 @@ from kant.kant_dao.dao_factory.dao_factories.dao_factory import DaoFactory
 class MongoDaoFactory(DaoFactory):
     """ Mongo Dao Facory Class """
 
-    def __init__(self, uri: str = "mongodb://localhost:27017/kant"):
+    def __init__(self, uri: str = "mongodb://localhost:27017/kant") -> None:
         self.set_uri(uri)
         self.connect()
 
@@ -46,50 +46,50 @@ class MongoDaoFactory(DaoFactory):
 
         self._uri = uri
 
-    def create_pddl_type_dao(self) -> MongoPddlTypeDao:
-        """ create a mongo pddl dao type object
+    def create_type_dao(self) -> MongoTypeDao:
+        """ create a mongo dao type object
 
         Returns:
-            MongoPddlTypeDao: mongoengine dao for pddl type
+            MongoTypeDao: mongoengine dao for type
         """
 
-        return MongoPddlTypeDao(uri=self._uri, connect=False)
+        return MongoTypeDao(uri=self._uri, connect=False)
 
-    def create_pddl_predicate_dao(self) -> MongoPddlPredicateDao:
-        """ create a mongo pddl dao predicate object
+    def create_fluent_dao(self) -> MongoFluentDao:
+        """ create a mongo dao fluent object
 
         Returns:
-            MongoPddlPredicateDao: mongoengine dao for pddl predicate
+            MongoFluentDao: mongoengine dao for fluent
         """
 
-        return MongoPddlPredicateDao(uri=self._uri, connect=False)
+        return MongoFluentDao(uri=self._uri, connect=False)
 
-    def create_pddl_action_dao(self) -> MongoPddlActionDao:
-        """ create a mongo pddl dao action object
+    def create_action_dao(self) -> MongoActionDao:
+        """ create a mongo dao action object
 
         Returns:
-            MongoPddlActionDao: mongoengine dao for pddl action
+            MongoActionDao: mongoengine dao for action
         """
 
-        return MongoPddlActionDao(uri=self._uri, connect=False)
+        return MongoActionDao(uri=self._uri, connect=False)
 
-    def create_pddl_object_dao(self) -> MongoPddlObjectDao:
-        """ create a mongo pddl dao object object
+    def create_object_dao(self) -> MongoObjectDao:
+        """ create a mongo dao object object
 
         Args:
             uri (str, optional): Mongo uri. Defaults to None.
 
         Returns:
-            MongoPddlObjectDao: mongoengine dao for pddl object
+            MongoObjectDao: mongoengine dao for object
         """
 
-        return MongoPddlObjectDao(uri=self._uri, connect=False)
+        return MongoObjectDao(uri=self._uri, connect=False)
 
-    def create_pddl_proposition_dao(self) -> MongoPddlPropositionDao:
-        """ create a mongo pddl dao proposition object
+    def create_fact_dao(self) -> MongoFactDao:
+        """ create a mongo dao fact object
 
         Returns:
-            MongoPddlPropositionDao: mongoengine dao for pddl proposition
+            MongoFactDao: mongoengine dao for fact
         """
 
-        return MongoPddlPropositionDao(uri=self._uri, connect=False)
+        return MongoFactDao(uri=self._uri, connect=False)

@@ -1,8 +1,8 @@
 from setuptools import find_packages, setup
 setup(
     name="kant",
-    packages=find_packages(include=["kant"]),
-    version="0.1.0",
+    packages=find_packages(),
+    version="1.0.0",
     description="Knowledge mAnagemeNT for PDDL",
     author="Miguel Á. González-Santamarta",
     license="GPL-3.0",

@@ -9,10 +9,13 @@ from kant.kant_dto import Dto
 class MongoDao(ABC):
     """ Mongo Dao Abstract Class """
 
-    def __init__(self, uri: str = "mongodb://localhost:27017/kant"):
+    def __init__(self, uri: str = "mongodb://localhost:27017/kant", connect: bool = True) -> None:
         self.set_uri(uri)
 
-    def connect(self):
+        if connect:
+            self.connect()
+
+    def connect(self) -> None:
         """ connect to current uri
         """
 

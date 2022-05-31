@@ -63,18 +63,19 @@ $ sudo python3 setup.py install
 ```python
 #!/usr/bin/env python3
 
+from http.client import CONFLICT
 from kant.kant_dao.dao_factory import (
     DaoFactoryMethod,
     DaoFamilies
 )
 
 from kant.kant_dto import (
-    PddlTypeDto,
-    PddlObjectDto,
-    PddlPredicateDto,
-    PddlPropositionDto,
-    PddlConditionEffectDto,
-    PddlActionDto
+    TypeDto,
+    ObjectDto,
+    FluentDto,
+    FactDto,
+    ConditionEffectDto,
+    ActionDto
 )
 
 dao_factory_method = DaoFactoryMethod()
@@ -84,58 +85,78 @@ dao_factory = dao_factory_method.create_dao_factory(dao_family,
                                                     uri=uri)
 
 # creating DAOs
-pddl_type_dao = dao_factory.create_pddl_type_dao()
-pddl_object_dao = dao_factory.create_pddl_object_dao()
-pddl_predicate_dao = dao_factory.create_pddl_predicate_dao()
-pddl_proposition_dao = dao_factory.create_pddl_proposition_dao()
-pddl_action_dao = dao_factory.create_pddl_action_dao()
+type_dao = dao_factory.create_type_dao()
+object_dao = dao_factory.create_object_dao()
+fluent_dao = dao_factory.create_fluent_dao()
+fact_dao = dao_factory.create_fact_dao()
+action_dao = dao_factory.create_action_dao()
 
 # types
-robot_type = PddlTypeDto("robot")
-wp_type = PddlTypeDto("wp")
+robot_type = TypeDto("robot", father=TypeDto("object"))
+wp_type = TypeDto("wp")
 
-# predicates
-robot_at = PddlPredicateDto(
+# fluent
+robot_at = FluentDto(
     "robot_at", [robot_type, wp_type])
+battery_level = FluentDto(
+    "battery_level", [robot_type], is_numeric=True)
 
 # objects
-rb1 = PddlObjectDto(robot_type, "rb1")
-wp1 = PddlObjectDto(wp_type, "wp1")
-wp2 = PddlObjectDto(wp_type, "wp2")
+rb1 = ObjectDto(robot_type, "rb1")
+wp1 = ObjectDto(wp_type, "wp1")
+wp2 = ObjectDto(wp_type, "wp2")
 
-# propositions
-pddl_proposition_dto = PddlPropositionDto(robot_at, [rb1, wp1])
-pddl_goal_dto = PddlPropositionDto(robot_at, [rb1, wp2], is_goal=True)
+# facts
+robot_at_fact = FactDto(robot_at, [rb1, wp1])
+battery_level_fact = FactDto(battery_level, [rb1], value=10.0)
+goal_dto = FactDto(robot_at, [rb1, wp2], is_goal=True)
 
 # actions
-r = PddlObjectDto(robot_type, "r")
-s = PddlObjectDto(wp_type, "s")
-d = PddlObjectDto(wp_type, "d")
+r = ObjectDto(robot_type, "r")
+s = ObjectDto(wp_type, "s")
+d = ObjectDto(wp_type, "d")
 
-condition_1 = PddlConditionEffectDto(robot_at,
-                                     [r, s],
-                                     time=PddlConditionEffectDto.AT_START)
+condition_1 = ConditionEffectDto(battery_level,
+                                 [r],
+                                 time=ConditionEffectDto.AT_START,
+                                 value=5.0,
+                                 condition_effect=ConditionEffectDto.GREATER)
 
-effect_1 = PddlConditionEffectDto(robot_at,
-                                  [r, s],
-                                  time=PddlConditionEffectDto.AT_START,
-                                  is_negative=True)
+condition_2 = ConditionEffectDto(robot_at,
+                                 [r, s],
+                                 time=ConditionEffectDto.AT_START,
+                                 value=True)
 
-effect_2 = PddlConditionEffectDto(robot_at,
-                                  [r, d],
-                                  time=PddlConditionEffectDto.AT_END)
+effect_1 = ConditionEffectDto(robot_at,
+                              [r, s],
+                              time=ConditionEffectDto.AT_START,
+                              value=False)
 
-pddl_action_dto = PddlActionDto(
-    "navigation", [r, s, d], [condition_1], [effect_1, effect_2])
+effect_2 = ConditionEffectDto(robot_at,
+                              [r, d],
+                              time=ConditionEffectDto.AT_END,
+                              value=True)
+
+effect_3 = ConditionEffectDto(battery_level,
+                              [r],
+                              time=ConditionEffectDto.AT_END,
+                              value=4.75,
+                              condition_effect=ConditionEffectDto.DECREASE)
+
+
+action_dto = ActionDto(
+    "navigation", [r, s, d],
+    [condition_1, condition_2],
+    [effect_1, effect_2, effect_3])
 
 # saving all
-pddl_object_dao.save(rb1)
-pddl_object_dao.save(wp1)
-pddl_object_dao.save(wp2)
+object_dao.save(rb1)
+object_dao.save(wp1)
+object_dao.save(wp2)
 
-pddl_proposition_dao.save(pddl_proposition_dto)
-pddl_proposition_dao.save(pddl_goal_dto)
+fact_dao.save(robot_at_fact)
+fact_dao.save(battery_level_fact)
+fact_dao.save(goal_dto)
 
-pddl_action_dao.save(pddl_action_dto)
-
+action_dao.save(action_dto)
 ```

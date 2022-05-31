@@ -1,7 +1,7 @@
 
 from kant.kant_dao.dao_interface.dao import Dao
-from kant.kant_dao.dao_interface.pddl_type_dao import PddlTypeDao
-from kant.kant_dao.dao_interface.pddl_object_dao import PddlObjectDao
-from kant.kant_dao.dao_interface.pddl_predicate_dao import PddlPredicateDao
-from kant.kant_dao.dao_interface.pddl_proposition_dao import PddlPropositionDao
-from kant.kant_dao.dao_interface.pddl_action_dao import PddlActionDao
+from kant.kant_dao.dao_interface.type_dao import TypeDao
+from kant.kant_dao.dao_interface.object_dao import ObjectDao
+from kant.kant_dao.dao_interface.fluent_dao import FluentDao
+from kant.kant_dao.dao_interface.fact_dao import FactDao
+from kant.kant_dao.dao_interface.action_dao import ActionDao

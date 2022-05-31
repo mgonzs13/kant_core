@@ -8,7 +8,7 @@ class Dto(ABC):
     """ Dto Abstract Class """
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         return "Dto abstract class"
 
     @abstractmethod

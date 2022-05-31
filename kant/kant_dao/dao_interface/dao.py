@@ -67,7 +67,7 @@ class Dao(ABC):
 
     @abstractmethod
     def delete_all(self) -> bool:
-        """ delete all pddl dtos
+        """ delete all dtos
 
         Returns:
             bool: succeed
