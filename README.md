@@ -63,7 +63,6 @@ $ sudo python3 setup.py install
 ```python
 #!/usr/bin/env python3
 
-from http.client import CONFLICT
 from kant.kant_dao import (
     DaoFactoryMethod,
     DaoFamilies
