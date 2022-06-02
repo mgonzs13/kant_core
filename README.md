@@ -6,9 +6,6 @@
 
 This is a Python tool to manage knowledge. It is based on several software design patterns (DTO, DAO, Factory).
 
-- property deleters in DTO
-- "ontology" basic class: save, get, save property
-
 ## Table of Contents
 
 1. [Features](#features)
@@ -40,13 +37,11 @@ Elements (DTOs) that can be used are:
 ### MongoDB
 
 ```shell
-$ wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-$ sudo apt-get install gnupg
-$ wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-$ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/$ sources.list.d/mongodb-org-4.4.list
+$ wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+$ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
 $ sudo apt-get update
 $ sudo apt-get install -y mongodb-org
-$ sudo systemctl start mongod
+$ sudo service mongod start
 ```
 
 ### Mongo Compass (Optional)
@@ -91,12 +86,13 @@ fact_dao = dao_factory.create_fact_dao()
 action_dao = dao_factory.create_action_dao()
 
 # types
-robot_type = TypeDto("robot", father=TypeDto("object"))
+object_type = TypeDto("object")
+robot_type = TypeDto("robot", father=object_type)
 wp_type = TypeDto("wp")
 
 # fluent
-robot_at = FluentDto(
-    "robot_at", [robot_type, wp_type])
+at = FluentDto(
+    "at", [object_type, wp_type])
 battery_level = FluentDto(
     "battery_level", [robot_type], is_numeric=True)
 
@@ -106,9 +102,9 @@ wp1 = ObjectDto(wp_type, "wp1")
 wp2 = ObjectDto(wp_type, "wp2")
 
 # facts
-robot_at_fact = FactDto(robot_at, [rb1, wp1])
+at_fact = FactDto(at, [rb1, wp1])
 battery_level_fact = FactDto(battery_level, [rb1], value=10.0)
-goal_dto = FactDto(robot_at, [rb1, wp2], is_goal=True)
+goal_dto = FactDto(at, [rb1, wp2], is_goal=True)
 
 # actions
 r = ObjectDto(robot_type, "r")
@@ -121,17 +117,17 @@ condition_1 = ConditionEffectDto(battery_level,
                                  value=5.0,
                                  condition_effect=ConditionEffectDto.GREATER)
 
-condition_2 = ConditionEffectDto(robot_at,
+condition_2 = ConditionEffectDto(at,
                                  [r, s],
                                  time=ConditionEffectDto.AT_START,
                                  value=True)
 
-effect_1 = ConditionEffectDto(robot_at,
+effect_1 = ConditionEffectDto(at,
                               [r, s],
                               time=ConditionEffectDto.AT_START,
                               value=False)
 
-effect_2 = ConditionEffectDto(robot_at,
+effect_2 = ConditionEffectDto(at,
                               [r, d],
                               time=ConditionEffectDto.AT_END,
                               value=True)
@@ -153,7 +149,7 @@ object_dao.save(rb1)
 object_dao.save(wp1)
 object_dao.save(wp2)
 
-fact_dao.save(robot_at_fact)
+fact_dao.save(at_fact)
 fact_dao.save(battery_level_fact)
 fact_dao.save(goal_dto)
 
