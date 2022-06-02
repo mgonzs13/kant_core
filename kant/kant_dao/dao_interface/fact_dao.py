@@ -46,16 +46,16 @@ class FactDao(Dao):
         """
 
     @abstractmethod
-    def get_propositions(self) -> List[FactDto]:
-        """ get all propositions (facts with bool value)
+    def get_bool_facts(self) -> List[FactDto]:
+        """ get all bool facts (facts with bool value)
 
         Returns:
             List[FactDto]: list of FactDto
         """
 
     @abstractmethod
-    def get_functions(self) -> List[FactDto]:
-        """ get all functions (facts with numeric value)
+    def get_numeric_facts(self) -> List[FactDto]:
+        """ get all numeric facts (facts with numeric value)
 
         Returns:
             List[FactDto]: list of FactDto

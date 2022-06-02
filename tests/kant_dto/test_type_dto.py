@@ -12,11 +12,11 @@ class TestTypeDto(unittest.TestCase):
         self.assertEqual("robot", str(self.type_dto))
 
     def test_type_dto_set_father(self):
-        self.type_dto.set_father(TypeDto("object"))
+        self.type_dto.father = TypeDto("object")
         self.assertEqual("robot - object", str(self.type_dto))
 
     def test_type_dto_get_name(self):
-        self.assertEqual("robot", self.type_dto.get_name())
+        self.assertEqual("robot", self.type_dto.name)
 
     def test_type_dto_eq_true(self):
         type_dto = TypeDto("robot")

@@ -34,10 +34,10 @@ class Robot(WorldObject):
         robot_object = object_dao.get(name)
 
         at_fact = Location._find_fact(
-            robot_object, fact_dao.get_by_fluent(at.get_name()))
+            robot_object, fact_dao.get_by_fluent(at.name))
 
         if at_fact:
             robot.at = Location.get(
-                at_fact.get_objects()[1].get_name())
+                at_fact.objects[1].name)
 
         return robot

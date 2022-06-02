@@ -8,9 +8,23 @@ class Dto(ABC):
     """ Dto Abstract Class """
 
     @abstractmethod
+    def to_pddl(self) -> str:
+        """ generate PDDL text for this DTO
+
+        Returns:
+            str: PDDL text
+        """
+
     def __str__(self) -> str:
-        return "Dto abstract class"
+        return self.to_pddl()
 
     @abstractmethod
     def __eq__(self, other) -> bool:
-        return False
+        """ equals DTO
+
+        Args:
+            other (_type_): other DTO
+
+        Returns:
+            bool: equals?
+        """

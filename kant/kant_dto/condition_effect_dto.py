@@ -33,44 +33,25 @@ class ConditionEffectDto(FactDto):
                  condition_effect: str = None
                  ) -> None:
 
-        self.set_time(time)
-        self.set_condition_effect(condition_effect)
+        self.time = time
+        self.condition_effect = condition_effect
 
         super().__init__(fluent_dto, objects_list, value)
 
-    def get_time(self) -> str:
-        """ time getter
-
-        Returns:
-            str: time the condition/effect will be resolved
-        """
-
+    @property
+    def time(self) -> str:
         return self._time
 
-    def set_time(self, time: str) -> None:
-        """ time setter
-
-        Args:
-            time (str): time the condition/effect will be resolved
-        """
-
+    @time.setter
+    def time(self, time: str) -> None:
         self._time = time
 
-    def get_condition_effect(self) -> str:
-        """ condition/effect getter
-
-        Returns:
-            str: condition or effect
-        """
-
+    @property
+    def condition_effect(self) -> str:
         return self._condition_effect
 
-    def set_condition_effect(self, condition_effect: str) -> None:
-        """ condition/effect setter
-
-        Args:
-            condition_effect (str): condition or effect
-        """
+    @condition_effect.setter
+    def condition_effect(self, condition_effect: str) -> None:
 
         if condition_effect is None:
             self._condition_effect = ConditionEffectDto.ASSIGN
@@ -80,21 +61,21 @@ class ConditionEffectDto(FactDto):
 
         self._condition_effect = condition_effect
 
-    def __str__(self) -> str:
+    def to_pddl(self) -> str:
 
-        string = "(" + self.get_fluent().get_name()
+        string = "(" + self.fluent.name
 
-        for object in self.get_objects():
-            string += " ?" + object.get_name()
+        for object in self.objects:
+            string += " ?" + object.name
 
         string += ")"
 
-        if self.get_fluent().get_is_numeric():
-            string = "(" + self.get_condition_effect() + " " + \
-                string + " " + str(self.get_value()) + ")"
+        if self.fluent.is_numeric:
+            string = "(" + self.condition_effect + " " + \
+                string + " " + str(self.value) + ")"
 
         else:
-            if not self.get_value():
+            if not self.value:
                 string = "(not " + string + ")"
 
         if self._time:
@@ -105,20 +86,20 @@ class ConditionEffectDto(FactDto):
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ConditionEffectDto):
 
-            if not other.get_fluent() == self.get_fluent():
+            if not other.fluent == self.fluent:
                 return False
 
-            if not len(other.get_objects()) == len(self.get_objects()):
+            if not len(other.objects) == len(self.objects):
                 return False
 
-            if not other.get_value() == self.get_value():
+            if not other.value == self.value:
                 return False
 
-            if not other.get_time() == self.get_time():
+            if not other.time == self.time:
                 return False
 
-            for object, other_object in zip(self.get_objects(),
-                                            other.get_objects()):
+            for object, other_object in zip(self.objects,
+                                            other.objects):
                 if not object == other_object:
                     return False
 

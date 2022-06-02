@@ -39,7 +39,7 @@ class TestPredicateDao(unittest.TestCase):
         self.assertEqual(1, len(self.fluent_dao.get_all()))
         self.assertEqual("(battery_level ?r0 - robot)",
                          str(self.fluent_dao.get("battery_level")))
-        self.assertTrue(self.fluent_dao.get("battery_level").get_is_numeric())
+        self.assertTrue(self.fluent_dao.get("battery_level").is_numeric)
 
     def test_fluent_dao_save_true_no_types(self):
         self.fluent_dto = FluentDto("robot_at")

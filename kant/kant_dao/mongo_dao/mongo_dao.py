@@ -1,7 +1,7 @@
 
 """ Mongo Dao Interface """
 
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractstaticmethod
 from mongoengine import Document, disconnect, connect
 from kant.kant_dto import Dto
 
@@ -9,8 +9,11 @@ from kant.kant_dto import Dto
 class MongoDao(ABC):
     """ Mongo Dao Abstract Class """
 
-    def __init__(self, uri: str = "mongodb://localhost:27017/kant", connect: bool = True) -> None:
-        self.set_uri(uri)
+    def __init__(self,
+                 uri: str = "mongodb://localhost:27017/kant",
+                 connect: bool = True
+                 ) -> None:
+        self.uri = uri
 
         if connect:
             self.connect()
@@ -20,24 +23,14 @@ class MongoDao(ABC):
         """
 
         disconnect()
-        connect(host=self._uri)
+        connect(host=self.uri)
 
-    def get_uri(self) -> str:
-        """ uri getter
-
-        Returns:
-            str: Mongo uri
-        """
-
+    @property
+    def uri(self) -> str:
         return self._uri
 
-    def set_uri(self, uri: str):
-        """ uri setter
-
-        Args:
-            uri (str): Mongo uri
-        """
-
+    @uri.setter
+    def uri(self, uri: str) -> None:
         self._uri = uri
 
     @abstractmethod
@@ -52,7 +45,18 @@ class MongoDao(ABC):
         """
 
     @abstractmethod
-    def _model_to_dto(self, model: Document) -> Dto:
+    def _exist_in_mongo(dto: Dto) -> bool:
+        """ check if Dto exists
+
+        Args:
+            dto (Dto): Dto
+
+        Returns:
+            bool: Dto exists?
+        """
+
+    @abstractstaticmethod
+    def _model_to_dto(model: Document) -> Dto:
         """ convert a Mongoengine document into a Dto
 
         Args:
@@ -62,7 +66,7 @@ class MongoDao(ABC):
             Dto: Dto
         """
 
-    @abstractmethod
+    @abstractstaticmethod
     def _dto_to_model(self, dto: Dto) -> Document:
         """ convert a Dto into a Mongoengine document
 
@@ -71,15 +75,4 @@ class MongoDao(ABC):
 
         Returns:
             Document: Mongoengine document
-        """
-
-    @abstractmethod
-    def _exist_in_mongo(self, dto: Dto) -> bool:
-        """ check if Dto exists
-
-        Args:
-            dto (Dto): Dto
-
-        Returns:
-            bool: Dto exists?
         """

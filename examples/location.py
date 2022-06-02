@@ -57,86 +57,86 @@ class Location:
 
     def __str__(self) -> str:
 
-        string = "Location: " + self._location_object.get_name() + "\n"
+        string = "Location: " + self._location_object.name + "\n"
 
         for fact_dto in self._fact_list:
-            string += "\t" + fact_dto.get_fluent().get_name() + ": " + \
-                str(fact_dto.get_value()) + "\n"
+            string += "\t" + fact_dto.fluent.name + ": " + \
+                str(fact_dto.value) + "\n"
 
         return string
 
     @property
     def name(self) -> float:
-        return self._location_object.get_name()
+        return self._location_object.name
 
     @name.setter
     def name(self, name: str) -> None:
-        self._location_object.set_name(name)
+        self._location_object.name = name
         self.save()
 
     # pose
     @property
     def pose_x(self) -> float:
-        return self._pose_x_fact.get_value()
+        return self._pose_x_fact.value
 
     @pose_x.setter
     def pose_x(self, value: float) -> None:
-        self._pose_x_fact.set_value(value)
+        self._pose_x_fact.value = value
         self.save()
 
     @property
     def pose_y(self) -> float:
-        return self._pose_y_fact.get_value()
+        return self._pose_y_fact.value
 
     @pose_y.setter
     def pose_y(self, value: float) -> None:
-        self._pose_y_fact.set_value(value)
+        self._pose_y_fact.value = value
         self.save()
 
     @property
     def pose_z(self) -> float:
-        return self._pose_z_fact.get_value()
+        return self._pose_z_fact.value
 
     @pose_z.setter
     def pose_z(self, value: float) -> None:
-        self._pose_z_fact.set_value(value)
+        self._pose_z_fact.value = value
         self.save()
 
     # quaternion
     @property
     def quaternion_x(self) -> float:
-        return self._quaternion_x_fact.get_value()
+        return self._quaternion_x_fact.value
 
     @quaternion_x.setter
     def quaternion_x(self, value: float) -> None:
-        self._quaternion_x_fact.set_value(value)
+        self._quaternion_x_fact.value = value
         self.save()
 
     @property
     def quaternion_y(self) -> float:
-        return self._quaternion_y_fact.get_value()
+        return self._quaternion_y_fact.value
 
     @quaternion_y.setter
     def quaternion_y(self, value: float) -> None:
-        self._quaternion_y_fact.set_value(value)
+        self._quaternion_y_fact.value = value
         self.save()
 
     @property
     def quaternion_z(self) -> float:
-        return self._quaternion_z_fact.get_value()
+        return self._quaternion_z_fact.value
 
     @quaternion_z.setter
     def quaternion_z(self, value: float) -> None:
-        self._quaternion_z_fact.set_value(value)
+        self._quaternion_z_fact.value = value
         self.save()
 
     @property
     def quaternion_w(self) -> float:
-        return self._quaternion_w_fact.get_value()
+        return self._quaternion_w_fact.value
 
     @quaternion_w.setter
     def quaternion_w(self, value: float) -> None:
-        self._quaternion_w_fact.set_value(value)
+        self._quaternion_w_fact.value = value
         self.save()
 
     # save & get
@@ -158,20 +158,20 @@ class Location:
         location = object_dao.get(name)
 
         p_x = Location._find_fact(
-            location, fact_dao.get_by_fluent(pose_x.get_name())).get_value()
+            location, fact_dao.get_by_fluent(pose_x.name)).value
         p_y = Location._find_fact(
-            location, fact_dao.get_by_fluent(pose_y.get_name())).get_value()
+            location, fact_dao.get_by_fluent(pose_y.name)).value
         p_z = Location._find_fact(
-            location, fact_dao.get_by_fluent(pose_z.get_name())).get_value()
+            location, fact_dao.get_by_fluent(pose_z.name)).value
 
         q_x = Location._find_fact(
-            location, fact_dao.get_by_fluent(quaternion_x.get_name())).get_value()
+            location, fact_dao.get_by_fluent(quaternion_x.name)).value
         q_y = Location._find_fact(
-            location, fact_dao.get_by_fluent(quaternion_y.get_name())).get_value()
+            location, fact_dao.get_by_fluent(quaternion_y.name)).value
         q_z = Location._find_fact(
-            location, fact_dao.get_by_fluent(quaternion_z.get_name())).get_value()
+            location, fact_dao.get_by_fluent(quaternion_z.name)).value
         q_w = Location._find_fact(
-            location, fact_dao.get_by_fluent(quaternion_w.get_name())).get_value()
+            location, fact_dao.get_by_fluent(quaternion_w.name)).value
 
         if (p_x is None or p_y is None or p_z is None or
                 q_x is None or q_y is None or q_z is None or q_w is None):
@@ -186,7 +186,7 @@ class Location:
 
         for fact_dto in fact_list:
 
-            if object_dto in fact_dto.get_objects():
+            if object_dto in fact_dto.objects:
                 return fact_dto
 
         return None

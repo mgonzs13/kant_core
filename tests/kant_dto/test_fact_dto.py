@@ -33,21 +33,21 @@ class TestFactDto(unittest.TestCase):
                          str(self.bat_fact_dto))
 
     def test_fact_dto_str_no_objects(self):
-        self.fact_dto.set_objects([])
+        self.fact_dto.objects = []
         self.assertEqual("(robot_at)",
                          str(self.fact_dto))
 
     def test_fact_dto_get_fluent(self):
         self.assertEqual("(robot_at ?r0 - robot ?w1 - wp)",
-                         str(self.fact_dto.get_fluent()))
+                         str(self.fact_dto.fluent))
 
     def test_fact_dto_get_objects(self):
-        objects_list = self.fact_dto.get_objects()
-        self.assertEqual("rb1", str(objects_list[0].get_name()))
-        self.assertEqual("wp1", str(objects_list[1].get_name()))
+        objects_list = self.fact_dto.objects
+        self.assertEqual("rb1", str(objects_list[0].name))
+        self.assertEqual("wp1", str(objects_list[1].name))
 
     def test_fact_dto_get_is_goal(self):
-        self.assertFalse(self.fact_dto.get_is_goal())
+        self.assertFalse(self.fact_dto.is_goal)
 
     def test_fact_dto_eq_true(self):
         fact_dto = FactDto(

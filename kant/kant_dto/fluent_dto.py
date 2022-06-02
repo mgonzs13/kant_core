@@ -15,76 +15,47 @@ class FluentDto(Dto):
                  is_numeric: bool = False
                  ) -> None:
 
-        self.set_name(name)
-        self.set_types(types)
-        self.set_is_numeric(is_numeric)
+        self.name = name
+        self.types = types
+        self.is_numeric = is_numeric
 
         Dto.__init__(self)
 
-    def get_name(self) -> str:
-        """ name getter
-
-        Returns:
-            str: name
-        """
-
+    @ property
+    def name(self) -> str:
         return self._name
 
-    def set_name(self, name: str) -> None:
-        """ name setter
-
-        Args:
-            name (str): name
-        """
-
+    @ name.setter
+    def name(self, name: str) -> None:
         self._name = name
 
-    def get_types(self) -> List[TypeDto]:
-        """ types list getter
-
-        Returns:
-            List[TypeDto]: list of types
-        """
-
+    @ property
+    def types(self) -> List[TypeDto]:
         return self._types
 
-    def set_types(self, types: List[TypeDto]) -> None:
-        """ types list setter
-
-        Args:
-            types (List[TypeDto]): list of types
-        """
+    @ types.setter
+    def types(self, types: List[TypeDto]) -> None:
 
         if types:
             self._types = types
         else:
             self._types = []
 
-    def get_is_numeric(self) -> bool:
-        """ is numeric getter
-
-        Returns:
-            bool: is numeric?
-        """
-
+    @ property
+    def is_numeric(self) -> bool:
         return self._is_numeric
 
-    def set_is_numeric(self, is_numeric: bool) -> None:
-        """ is numeric setter
-
-        Args:
-            is_numeric (int): is numeric?
-        """
-
+    @ is_numeric.setter
+    def is_numeric(self, is_numeric: bool) -> None:
         self._is_numeric = is_numeric
 
-    def __str__(self) -> str:
-        string = "(" + self._name
+    def to_pddl(self) -> str:
+        string = "(" + self.name
 
-        if self._types:
-            for i in range(len(self._types)):
-                aux_type = self._types[i]
-                type_name = aux_type.get_name()
+        if self.types:
+            for i in range(len(self.types)):
+                aux_type = self.types[i]
+                type_name = aux_type.name
                 string += " ?" + type_name[0] + str(i) + " - " + type_name
 
         string += ")"
@@ -93,6 +64,6 @@ class FluentDto(Dto):
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, FluentDto):
-            return self.get_name() == other.get_name()
+            return self.name == other.name
 
         return False

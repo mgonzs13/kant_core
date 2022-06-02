@@ -17,71 +17,43 @@ class FactDto(Dto):
                  is_goal: bool = False
                  ) -> None:
 
-        self.set_fluent(fluent)
-        self.set_objects(objects)
-        self.set_value(value)
-        self.set_is_goal(is_goal)
+        self.fluent = fluent
+        self.objects = objects
+        self.value = value
+        self.is_goal = is_goal
 
         Dto.__init__(self)
 
-    def get_fluent(self) -> FluentDto:
-        """ fluent getter
-
-        Returns:
-            FluentDto: fluent
-        """
-
+    @property
+    def fluent(self) -> FluentDto:
         return self._fluent
 
-    def set_fluent(self, fluent: FluentDto) -> None:
-        """ fluent setter
-
-        Args:
-            fluent (FluentDto): fluent
-        """
-
+    @fluent.setter
+    def fluent(self, fluent: FluentDto) -> None:
         self._fluent = fluent
 
-    def get_objects(self) -> List[ObjectDto]:
-        """ objects list getter
-
-        Returns:
-            List[ObjectDto]: list of objects
-        """
-
+    @property
+    def objects(self) -> List[ObjectDto]:
         return self._objects
 
-    def set_objects(self, objects: List[ObjectDto]) -> None:
-        """ objects list setter
-
-        Args:
-            objects (List[ObjectDto]): list of objects
-        """
+    @objects.setter
+    def objects(self, objects: List[ObjectDto]) -> None:
 
         if objects:
             self._objects = objects
         else:
             self._objects = []
 
-    def get_value(self) -> Union[float, bool]:
-        """ value getter
-
-        Returns:
-            Union[float, bool]: value
-        """
-
+    @property
+    def value(self) -> Union[float, bool]:
         return self._value
 
-    def set_value(self, value: Union[float, bool]) -> None:
-        """ value setter
-
-        Args:
-            value (Union[float, bool]): value
-        """
+    @value.setter
+    def value(self, value: Union[float, bool]) -> None:
 
         if value is None:
 
-            if self.get_fluent().get_is_numeric():
+            if self.fluent.is_numeric:
                 self._value = 0
             else:
                 self._value = True
@@ -89,48 +61,38 @@ class FactDto(Dto):
         else:
             self._value = value
 
-    def get_is_goal(self) -> bool:
-        """ is goal getter
-
-        Returns:
-            bool: is this fact a goal
-        """
-
+    @property
+    def is_goal(self) -> bool:
         return self._is_goal
 
-    def set_is_goal(self, is_goal: bool) -> None:
-        """ is goal setter
-
-        Args:
-            is_goal (bool): is this fact a goal
-        """
-
+    @is_goal.setter
+    def is_goal(self, is_goal: bool) -> None:
         self._is_goal = is_goal
 
-    def __str__(self) -> str:
-        string = "(" + self._fluent.get_name()
+    def to_pddl(self) -> str:
+        string = "(" + self.fluent.name
 
         for object in self._objects:
-            string += " " + object.get_name()
+            string += " " + object.name
 
         string += ")"
 
-        if self.get_fluent().get_is_numeric():
-            string = "(= " + string + " " + str(self.get_value()) + ")"
+        if self.fluent.is_numeric:
+            string = "(= " + string + " " + str(self.value) + ")"
 
         return string
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, FactDto):
 
-            if not other.get_fluent() == self.get_fluent():
+            if not other.fluent == self.fluent:
                 return False
 
-            if not len(other.get_objects()) == len(self.get_objects()):
+            if not len(other.objects) == len(self.objects):
                 return False
 
-            for object, other_object in zip(self.get_objects(),
-                                            other.get_objects()):
+            for object, other_object in zip(self.objects,
+                                            other.objects):
                 if not object == other_object:
                     return False
 

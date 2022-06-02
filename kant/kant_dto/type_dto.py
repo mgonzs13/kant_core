@@ -10,56 +10,36 @@ class TypeDto(Dto):
 
     def __init__(self, name: str, father: "TypeDto" = None) -> None:
 
-        self.set_name(name)
-        self.set_father(father)
+        self.name = name
+        self.father = father
 
         Dto.__init__(self)
 
-    def get_name(self) -> str:
-        """ name getter
-
-        Returns:
-            str: name
-        """
-
+    @property
+    def name(self) -> str:
         return self._name
 
-    def set_name(self, name: str) -> None:
-        """ name setter
-
-        Args:
-            name (str): name
-        """
-
+    @name.setter
+    def name(self, name: str) -> None:
         self._name = name
 
-    def get_father(self) -> "TypeDto":
-        """ father getter
-
-        Returns:
-            TypeDto: name
-        """
-
+    @property
+    def father(self) -> "TypeDto":
         return self._father
 
-    def set_father(self, father: "TypeDto") -> None:
-        """ father setter
-
-        Args:
-            name (TypeDto): name
-        """
-
+    @father.setter
+    def father(self, father: "TypeDto") -> None:
         self._father = father
 
-    def __str__(self) -> str:
+    def to_pddl(self) -> str:
 
-        if self._father is None:
-            return self._name
+        if self.father is None:
+            return self.name
 
-        return self._name + " - " + self._father.get_name()
+        return self.name + " - " + self.father.name
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, TypeDto):
-            return self.get_name() == other.get_name()
+            return self.name == other.name
 
         return False

@@ -19,7 +19,8 @@ class MongoTypeDao(TypeDao, MongoDao):
         TypeDao.__init__(self)
         MongoDao.__init__(self, uri, connect)
 
-    def _model_to_dto(self, type_model: TypeModel) -> TypeDto:
+    @staticmethod
+    def _model_to_dto(type_model: TypeModel) -> TypeDto:
         """ convert a Mongoengine type document into a TypeDto
 
         Args:
@@ -32,11 +33,12 @@ class MongoTypeDao(TypeDao, MongoDao):
         type_dto = TypeDto(type_model.name)
 
         if type_model.father:
-            type_dto.set_father(self._model_to_dto(type_model.father))
+            type_dto.father = MongoTypeDao._model_to_dto(type_model.father)
 
         return type_dto
 
-    def _dto_to_model(self, type_dto: TypeDto) -> TypeModel:
+    @staticmethod
+    def _dto_to_model(type_dto: TypeDto) -> TypeModel:
         """ convert a TypeDto into a Mongoengine type document
 
         Args:
@@ -47,10 +49,11 @@ class MongoTypeDao(TypeDao, MongoDao):
         """
 
         type_model = TypeModel()
-        type_model.name = type_dto.get_name()
+        type_model.name = type_dto.name
 
-        if type_dto.get_father():
-            type_model.father = self._dto_to_model(type_dto.get_father())
+        if type_dto.father:
+            type_model.father = MongoTypeDao._dto_to_model(
+                type_dto.father)
 
         return type_model
 
@@ -78,8 +81,7 @@ class MongoTypeDao(TypeDao, MongoDao):
             Document: Mongoengine type document
         """
 
-        type_model = TypeModel.objects(
-            name=type_dto.get_name())
+        type_model = TypeModel.objects(name=type_dto.name)
 
         if not type_model:
             return None
@@ -97,12 +99,11 @@ class MongoTypeDao(TypeDao, MongoDao):
             TypeDto: TypeDto of the type name
         """
 
-        type_model = TypeModel.objects(
-            name=type_name)
+        type_model = TypeModel.objects(name=type_name)
 
         if type_model:
             type_model = type_model[0]
-            return self._model_to_dto(type_model)
+            return MongoTypeDao._model_to_dto(type_model)
 
         return None
 
@@ -117,7 +118,7 @@ class MongoTypeDao(TypeDao, MongoDao):
         type_dto_list = []
 
         for ele in type_model:
-            type_dto = self._model_to_dto(ele)
+            type_dto = MongoTypeDao._model_to_dto(ele)
             type_dto_list.append(type_dto)
 
         return type_dto_list
@@ -137,12 +138,12 @@ class MongoTypeDao(TypeDao, MongoDao):
             return False
 
         # propagating saving
-        if type_dto.get_father():
-            if not self.save(type_dto.get_father()):
+        if type_dto.father:
+            if not self.save(type_dto.father):
                 return False
 
         # saving
-        type_model = self._dto_to_model(type_dto)
+        type_model = MongoTypeDao._dto_to_model(type_dto)
         type_model.save(force_insert=True)
         return True
 
@@ -163,12 +164,12 @@ class MongoTypeDao(TypeDao, MongoDao):
         if type_model:
 
             # propagating saving
-            if type_dto.get_father():
-                if not self.save(type_dto.get_father()):
+            if type_dto.father:
+                if not self.save(type_dto.father):
                     return False
 
             # updating
-            type_model.name = type_dto.get_name()
+            type_model.name = type_dto.name
             type_model.save()
             return True
 
@@ -209,7 +210,7 @@ class MongoTypeDao(TypeDao, MongoDao):
 
             # delete childs
             child_models = TypeModel.objects(
-                father=type_dto.get_name())
+                father=type_dto.name)
 
             for child in child_models:
                 child.delete()

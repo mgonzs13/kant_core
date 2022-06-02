@@ -6,6 +6,9 @@
 
 This is a Python tool to manage knowledge. It is based on several software design patterns (DTO, DAO, Factory).
 
+- property deleters in DTO
+- "ontology" basic class: save, get, save property
+
 ## Table of Contents
 
 1. [Features](#features)

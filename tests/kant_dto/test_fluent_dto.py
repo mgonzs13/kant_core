@@ -17,19 +17,19 @@ class TestFluentDto(unittest.TestCase):
                          str(self.fluent_dto))
 
     def test_fluent_dto_str_no_types(self):
-        self.fluent_dto.set_types(None)
+        self.fluent_dto.types = None
         self.assertEqual("(robot_at)",
                          str(self.fluent_dto))
 
     def test_fluent_dto_get_name(self):
         self.assertEqual("robot_at",
-                         self.fluent_dto.get_name())
+                         self.fluent_dto.name)
 
     def test_fluent_dto_get_types(self):
-        types_list = self.fluent_dto.get_types()
+        types_list = self.fluent_dto.types
         self.assertEqual(2, len(types_list))
-        self.assertEqual("robot", types_list[0].get_name())
-        self.assertEqual("wp", types_list[1].get_name())
+        self.assertEqual("robot", types_list[0].name)
+        self.assertEqual("wp", types_list[1].name)
 
     def test_fluent_dto_eq_true(self):
         fluent_dto = FluentDto("robot_at", [])

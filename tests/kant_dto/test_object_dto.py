@@ -14,10 +14,10 @@ class TestObjectDto(unittest.TestCase):
         self.assertEqual("rb1 - robot", str(self.object_dto))
 
     def test_type_dto_get_type(self):
-        self.assertEqual("robot", str(self.object_dto.get_type()))
+        self.assertEqual("robot", str(self.object_dto.type))
 
     def test_type_dto_get_name(self):
-        self.assertEqual("rb1", self.object_dto.get_name())
+        self.assertEqual("rb1", self.object_dto.name)
 
     def test_object_dto_eq_true(self):
         object_dto = ObjectDto(self.type_dto, "rb1")

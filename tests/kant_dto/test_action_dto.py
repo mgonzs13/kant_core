@@ -57,12 +57,12 @@ class TestActionDto(unittest.TestCase):
 
     def test_action_dto_str(self):
         self.maxDiff = None
-        self.action_dto.set_durative(False)
-        self.condition_1.set_time("")
-        self.condition_2.set_time("")
-        self.effect_1.set_time("")
-        self.effect_2.set_time("")
-        self.effect_3.set_time("")
+        self.action_dto.durative = False
+        self.condition_1.time = ""
+        self.condition_2.time = ""
+        self.effect_1.time = ""
+        self.effect_2.time = ""
+        self.effect_3.time = ""
         self.assertEqual("""\
 (:action navigation
 \t:parameters ( ?r - robot ?s - wp ?d - wp)
@@ -98,7 +98,7 @@ class TestActionDto(unittest.TestCase):
 
     def test_action_dto_str_durative_no_effects(self):
         self.maxDiff = None
-        self.action_dto.set_effects([])
+        self.action_dto.effects = []
         self.assertEqual("""\
 (:durative-action navigation
 \t:parameters ( ?r - robot ?s - wp ?d - wp)
@@ -114,7 +114,7 @@ class TestActionDto(unittest.TestCase):
 
     def test_action_dto_str_durative_no_conditions(self):
         self.maxDiff = None
-        self.action_dto.set_conditions([])
+        self.action_dto.conditions = []
         self.assertEqual("""\
 (:durative-action navigation
 \t:parameters ( ?r - robot ?s - wp ?d - wp)
@@ -131,9 +131,9 @@ class TestActionDto(unittest.TestCase):
 
     def test_action_dto_str_durative_no_parameters(self):
         self.maxDiff = None
-        self.action_dto.set_conditions([])
-        self.action_dto.set_effects([])
-        self.action_dto.set_parameters([])
+        self.action_dto.conditions = []
+        self.action_dto.effects = []
+        self.action_dto.parameters = []
         self.assertEqual("""\
 (:durative-action navigation
 \t:parameters ()
@@ -146,33 +146,33 @@ class TestActionDto(unittest.TestCase):
                          str(self.action_dto))
 
     def test_action_dto_get_name(self):
-        self.assertEqual("navigation", self.action_dto.get_name())
+        self.assertEqual("navigation", self.action_dto.name)
 
     def test_action_dto_get_prameters_list(self):
-        params_list = self.action_dto.get_parameters()
+        params_list = self.action_dto.parameters
         self.assertEqual("r - robot", str(params_list[0]))
         self.assertEqual("s - wp", str(params_list[1]))
         self.assertEqual("d - wp", str(params_list[2]))
 
     def test_action_dto_get_conditions(self):
-        conditions_list = self.action_dto.get_conditions()
+        conditions_list = self.action_dto.conditions
         self.assertEqual("(at start (robot_at ?r ?s))",
                          str(conditions_list[0]))
         self.assertEqual("(at start (> (battery_level ?r) 30))",
                          str(conditions_list[1]))
 
     def test_action_dto_get_effects(self):
-        effects_list = self.action_dto.get_effects()
+        effects_list = self.action_dto.effects
         self.assertEqual("(at start (not (robot_at ?r ?s)))",
                          str(effects_list[0]))
         self.assertEqual("(at end (robot_at ?r ?d))",
                          str(effects_list[1]))
 
     def test_action_dto_get_durative(self):
-        self.assertTrue(self.action_dto.get_durative())
+        self.assertTrue(self.action_dto.durative)
 
     def test_action_dto_get_duration(self):
-        self.assertEqual(10, self.action_dto.get_duration())
+        self.assertEqual(10, self.action_dto.duration)
 
     def test_action_dto_eq_true(self):
         action_dto = ActionDto("navigation")

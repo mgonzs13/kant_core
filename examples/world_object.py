@@ -25,25 +25,24 @@ class WorldObject:
         string = "world_object: " + self.name
 
         if not self.at is None:
-            string += "\n\t" + at.get_name() + ": " + self.at.name
+            string += "\n\t" + at.name + ": " + self.at.name
 
         return string
 
     @property
     def name(self) -> float:
-        return self._world_object_object.get_name()
+        return self._world_object_object.name
 
     @name.setter
     def name(self, name: str) -> None:
-        self._world_object_object.set_name(name)
+        self._world_object_object.name = name
         self.save()
 
     @property
     def at(self) -> Location:
         if self._at_fact is None:
             return None
-
-        return Location.get(self._at_fact.get_objects()[1].get_name())
+        return Location.get(self._at_fact.objects[1].name)
 
     @at.setter
     def at(self, location: Location) -> None:
@@ -92,10 +91,10 @@ class WorldObject:
         world_object_object = object_dao.get(name)
 
         at_fact = Location._find_fact(
-            world_object_object, fact_dao.get_by_fluent(at.get_name()))
+            world_object_object, fact_dao.get_by_fluent(at.name))
 
         if at_fact:
             world_object.at = Location.get(
-                at_fact.get_objects()[1].get_name())
+                at_fact.objects[1].name)
 
         return world_object

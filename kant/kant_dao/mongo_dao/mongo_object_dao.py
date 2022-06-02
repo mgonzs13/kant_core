@@ -28,7 +28,8 @@ class MongoObjectDao(ObjectDao, MongoDao):
 
         self._me_type_dao = MongoTypeDao(uri, connect=False)
 
-    def _model_to_dto(self, object_model: ObjectModel) -> ObjectDto:
+    @staticmethod
+    def _model_to_dto(object_model: ObjectModel) -> ObjectDto:
         """ convert a Mongoengine object document into a ObjectDto
 
         Args:
@@ -38,14 +39,15 @@ class MongoObjectDao(ObjectDao, MongoDao):
             ObjectDto: ObjectDto
         """
 
-        type_dto = self._me_type_dao._model_to_dto(object_model.type)
+        type_dto = MongoTypeDao._model_to_dto(object_model.type)
 
         object_dto = ObjectDto(type_dto,
                                object_model.name)
 
         return object_dto
 
-    def _dto_to_model(self, object_dto: ObjectDto) -> ObjectModel:
+    @staticmethod
+    def _dto_to_model(object_dto: ObjectDto) -> ObjectModel:
         """ convert a ObjectDto into a Mongoengine object document
 
         Args:
@@ -55,12 +57,12 @@ class MongoObjectDao(ObjectDao, MongoDao):
             Document: Mongoengine object document
         """
 
-        type_model = self._me_type_dao._dto_to_model(
-            object_dto.get_type())
+        type_model = MongoTypeDao._dto_to_model(
+            object_dto.type)
 
         object_model = ObjectModel()
 
-        object_model.name = object_dto.get_name()
+        object_model.name = object_dto.name
 
         object_model.type = type_model
 
@@ -91,8 +93,7 @@ class MongoObjectDao(ObjectDao, MongoDao):
             Document: Mongoengine object document
         """
 
-        object_model = ObjectModel.objects(
-            name=object_dto.get_name())
+        object_model = ObjectModel.objects(name=object_dto.name)
 
         if not object_model:
             return None
@@ -110,13 +111,12 @@ class MongoObjectDao(ObjectDao, MongoDao):
             ObjectDto: ObjectDto of the object name
         """
 
-        object_model = ObjectModel.objects(
-            name=object_name)
+        object_model = ObjectModel.objects(name=object_name)
 
         # check if object exists
         if object_model:
             object_model = object_model[0]
-            object_dto = self._model_to_dto(
+            object_dto = MongoObjectDao._model_to_dto(
                 object_model)
             return object_dto
 
@@ -133,7 +133,7 @@ class MongoObjectDao(ObjectDao, MongoDao):
         object_dto_list = []
 
         for ele in object_model:
-            object_dto = self._model_to_dto(ele)
+            object_dto = MongoObjectDao._model_to_dto(ele)
             object_dto_list.append(object_dto)
 
         return object_dto_list
@@ -152,11 +152,11 @@ class MongoObjectDao(ObjectDao, MongoDao):
         if self._exist_in_mongo(object_dto):
             return False
 
-        object_model = self._dto_to_model(
+        object_model = MongoObjectDao._dto_to_model(
             object_dto)
 
         # propagating saving
-        if not self._me_type_dao.save(object_dto.get_type()):
+        if not self._me_type_dao.save(object_dto.type):
             return False
 
         # saving
@@ -180,11 +180,11 @@ class MongoObjectDao(ObjectDao, MongoDao):
         if object_model:
 
             # propagating saving
-            if not self._me_type_dao.save(object_dto.get_type()):
+            if not self._me_type_dao.save(object_dto.type):
                 return False
 
             # updating
-            new_object_model = self._dto_to_model(
+            new_object_model = MongoObjectDao._dto_to_model(
                 object_dto)
 
             object_model.name = new_object_model.name

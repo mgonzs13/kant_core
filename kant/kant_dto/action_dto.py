@@ -17,162 +17,106 @@ class ActionDto(Dto):
                  durative: bool = True
                  ) -> None:
 
-        self.set_name(name)
-        self.set_parameters(parameters)
-        self.set_durative(durative)
-        self.set_duration(10)
-        self.set_conditions(conditions)
-        self.set_effects(effects)
+        self.name = name
+        self.parameters = parameters
+        self.durative = durative
+        self.duration = 10
+        self.conditions = conditions
+        self.effects = effects
 
         Dto.__init__(self)
 
-    def get_name(self) -> str:
-        """ pdd action name getter
-
-        Returns:
-            str: name
-        """
-
+    @property
+    def name(self) -> str:
         return self._name
 
-    def set_name(self, name: str) -> None:
-        """ name setter
-
-        Args:
-            name (str): name
-        """
-
+    @name.setter
+    def name(self, name: str) -> None:
         self._name = name
 
-    def get_durative(self) -> bool:
-        """ durative getter
-
-        Returns:
-            bool: is this a durative action
-        """
-
+    @property
+    def durative(self) -> bool:
         return self._durative
 
-    def set_durative(self, durative: bool) -> None:
-        """ durative setter
-
-        Args:
-            durative (bool): is this a durative action
-        """
-
+    @durative.setter
+    def durative(self, durative: bool) -> None:
         self._durative = durative
 
-    def get_duration(self) -> int:
-        """ duration getter
-
-        Returns:
-            int: action duration
-        """
-
+    @property
+    def duration(self) -> int:
         return self._duration
 
-    def set_duration(self, duration: int) -> None:
-        """ duration setter
-
-        Args:
-            duration (int): action duration
-        """
-
+    @duration.setter
+    def duration(self, duration: int) -> None:
         self._duration = duration
 
-    def get_parameters(self) -> List[ObjectDto]:
-        """ parameters list getter
-
-        Returns:
-            List[ObjectDto]: list of action parameters
-        """
-
+    @property
+    def parameters(self) -> List[ObjectDto]:
         return self._parameters
 
-    def set_parameters(self, parameters: List[ObjectDto]) -> None:
-        """ parameters list setter
-
-        Args:
-            parameters (List[ObjectDto]): list of action parameters
-        """
+    @parameters.setter
+    def parameters(self, parameters: List[ObjectDto]) -> None:
 
         if parameters:
             self._parameters = parameters
         else:
             self._parameters = []
 
-    def get_conditions(self) -> List[ConditionEffectDto]:
-        """ conditions list getter
-
-        Returns:
-            List[ConditionEffectDto]: list of action conditions
-        """
-
+    @property
+    def conditions(self) -> List[ConditionEffectDto]:
         return self._conditions
 
-    def set_conditions(self, conditions: List[ConditionEffectDto]) -> None:
-        """ conditions list setter
-
-        Args:
-            conditions (List[ConditionEffectDto]): list of action conditions
-        """
+    @conditions.setter
+    def conditions(self, conditions: List[ConditionEffectDto]) -> None:
 
         if conditions:
             self._conditions = conditions
         else:
             self._conditions = []
 
-    def get_effects(self) -> List[ConditionEffectDto]:
-        """ effects list getter
-
-        Returns:
-            List[ConditionEffectDto]: list of action effects
-        """
+    @property
+    def effects(self) -> List[ConditionEffectDto]:
         return self._effects
 
-    def set_effects(self, effects: List[ConditionEffectDto]):
-        """ effects list setter
-
-        Args:
-            effects (List[ConditionEffectDto]): list of action effects
-        """
+    @effects.setter
+    def effects(self, effects: List[ConditionEffectDto]):
 
         if effects:
             self._effects = effects
         else:
             self._effects = []
 
-    def __str__(self) -> str:
+    def to_pddl(self) -> str:
         string = "(:"
 
         # durative
-        if self._durative:
+        if self.durative:
             string += "durative-"
-        string += "action " + self._name
+        string += "action " + self.name
 
         # parameters
         string += "\n\t:parameters ("
-        for parameter in self._parameters:
-            string += " ?" + parameter.get_name() + " - " + \
-                parameter.get_type().get_name()
+        for parameter in self.parameters:
+            string += " ?" + parameter.name + " - " + \
+                parameter.type.name
         string += ")"
 
         # duration
-        if self._durative:
-            string += "\n\t:duration (= ?duration " + str(self._duration) + ")"
+        if self.durative:
+            string += "\n\t:duration (= ?duration " + str(self.duration) + ")"
 
         # conditions
-        if self._durative:
+        if self.durative:
             string += "\n\t:condition (and"
         else:
             string += "\n\t:precondition (and"
-        for condi in self._conditions:
+        for condi in self.conditions:
             string += "\n\t\t" + str(condi)
         string += "\n\t)"
 
         # effects
         string += "\n\t:effect (and"
-        for effect in self._effects:
+        for effect in self.effects:
             string += "\n\t\t" + str(effect)
         string += "\n\t)"
 
@@ -182,6 +126,6 @@ class ActionDto(Dto):
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ActionDto):
-            return self.get_name() == other.get_name()
+            return self.name == other.name
 
         return False

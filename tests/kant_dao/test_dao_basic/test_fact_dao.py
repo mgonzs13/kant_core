@@ -44,16 +44,16 @@ class TestFactDao(unittest.TestCase):
     def test_fact_dao_save_true(self):
         result = self.fact_dao._save(self.fact_dto)
         self.assertTrue(result)
-        self.assertEqual(1, len(self.fact_dao.get_propositions()))
-        self.assertEqual(0, len(self.fact_dao.get_functions()))
+        self.assertEqual(1, len(self.fact_dao.get_bool_facts()))
+        self.assertEqual(0, len(self.fact_dao.get_numeric_facts()))
 
     def test_fact_dao_numeric_save_true(self):
         result = self.fact_dao._save(self.bat_fact_dto)
         self.assertTrue(result)
-        self.assertEqual(0, len(self.fact_dao.get_propositions()))
-        self.assertEqual(1, len(self.fact_dao.get_functions()))
+        self.assertEqual(0, len(self.fact_dao.get_bool_facts()))
+        self.assertEqual(1, len(self.fact_dao.get_numeric_facts()))
         self.assertEqual("(= (battery_level rb1) 100.00)",
-                         str(self.fact_dao.get_functions()[0]))
+                         str(self.fact_dao.get_numeric_facts()[0]))
 
     def test_fact_dao_save_true_no_objects(self):
         self.at = FluentDto("at")
@@ -63,12 +63,12 @@ class TestFactDao(unittest.TestCase):
         self.assertEqual(1, len(self.fact_dao.get_all()))
 
     def test_fact_dao_save_false_incorrect_fact_types(self):
-        self.fact_dto.get_objects().reverse()
+        self.fact_dto.objects.reverse()
         result = self.fact_dao._save(self.fact_dto)
         self.assertFalse(result)
 
     def test_fact_dao_save_false_incorrect_fact_len(self):
-        self.fact_dto.set_objects([])
+        self.fact_dto.objects = []
         result = self.fact_dao._save(self.fact_dto)
         self.assertFalse(result)
 
@@ -91,14 +91,14 @@ class TestFactDao(unittest.TestCase):
                          str(self.fact_dto))
 
     def test_fact_dao_get_goals(self):
-        self.fact_dto.set_is_goal(True)
+        self.fact_dto.is_goal = True
         self.fact_dao._save(self.fact_dto)
         self.fact_dto = self.fact_dao.get_goals()[0]
         self.assertEqual("(at rb1 wp1)",
                          str(self.fact_dto))
 
     def test_fact_dao_get_goals_empty(self):
-        self.fact_dto.set_is_goal(False)
+        self.fact_dto.is_goal = False
         self.fact_dao._save(self.fact_dto)
         self.fact_dto = self.fact_dao.get_goals()
         self.assertEqual(0, len(self.fact_dto))
@@ -110,7 +110,7 @@ class TestFactDao(unittest.TestCase):
                          str(self.fact_dto))
 
     def test_fact_dao_get_no_goals_empty(self):
-        self.fact_dto.set_is_goal(True)
+        self.fact_dto.is_goal = True
         self.fact_dao._save(self.fact_dto)
         self.fact_dto = self.fact_dao.get_no_goals()
         self.assertEqual(0, len(self.fact_dto))
@@ -133,7 +133,7 @@ class TestFactDao(unittest.TestCase):
         self.assertFalse(result)
 
     def test_fact_dao_update_false_incorrect_fact_types(self):
-        self.fact_dto.get_objects().reverse()
+        self.fact_dto.objects.reverse()
         result = self.fact_dao._update(self.fact_dto)
         self.assertFalse(result)
 
@@ -169,5 +169,5 @@ class TestFactDao(unittest.TestCase):
     def test_fact_dao_modify_type(self):
         self.fact_dao.save(self.bat_fact_dto)
         self.fact_dto = self.fact_dao.get_by_fluent("battery_level")[0]
-        self.fact_dto.get_fluent().get_types()[0].set_name("bot")
-        self.assertEqual("rb1 - bot", str(self.fact_dto.get_objects()[0]))
+        self.fact_dto.fluent.types[0].name = "bot"
+        self.assertEqual("rb1 - bot", str(self.fact_dto.objects[0]))

@@ -73,38 +73,36 @@ class TestActionDao(unittest.TestCase):
         self.assertTrue(result)
 
     def test_action_dao_save_false_incorrect_condition_types(self):
-        self.action_dto.get_conditions(
-        )[0].get_objects().reverse()
+        self.action_dto.conditions[0].objects.reverse()
         result = self.action_dao._save(self.action_dto)
         self.assertFalse(result)
 
     def test_action_dao_save_false_incorrect_condition_len(self):
-        self.action_dto.get_conditions(
-        )[0].set_objects([])
+        self.action_dto.conditions[0].objects = []
         result = self.action_dao._save(self.action_dto)
         self.assertFalse(result)
 
     def test_action_dao_save_false_durative_condition_no_time(self):
-        self.action_dto.get_conditions()[0].set_time("")
-        self.action_dto.set_effects([])
+        self.action_dto.conditions[0].time = ""
+        self.action_dto.effects = []
         result = self.action_dao._save(self.action_dto)
         self.assertFalse(result)
 
     def test_action_dao_save_false_durative_effect_no_time(self):
-        self.action_dto.get_effects()[1].set_time("")
-        self.action_dto.set_conditions([])
+        self.action_dto.effects[1].time = ""
+        self.action_dto.conditions = []
         result = self.action_dao._save(self.action_dto)
         self.assertFalse(result)
 
     def test_action_dao_save_false_no_durative_condition_time(self):
-        self.action_dto.set_durative(False)
-        self.action_dto.set_effects([])
+        self.action_dto.durative = False
+        self.action_dto.effects = []
         result = self.action_dao._save(self.action_dto)
         self.assertFalse(result)
 
     def test_action_dao_save_false_no_durative_effect_time(self):
-        self.action_dto.set_durative(False)
-        self.action_dto.set_conditions([])
+        self.action_dto.durative = False
+        self.action_dto.conditions = []
         result = self.action_dao._save(self.action_dto)
         self.assertFalse(result)
 
@@ -112,7 +110,7 @@ class TestActionDao(unittest.TestCase):
         r = ObjectDto(self.robot_type, "a")
         s = ObjectDto(self.wp_type, "s")
         d = ObjectDto(self.wp_type, "d")
-        self.action_dto.set_parameters([r, s, d])
+        self.action_dto.parameters = [r, s, d]
         result = self.action_dao._save(self.action_dto)
         self.assertFalse(result)
 
@@ -120,7 +118,7 @@ class TestActionDao(unittest.TestCase):
         r = ObjectDto(self.robot_type, "r")
         s = ObjectDto(self.wp_type, "s")
         d = ObjectDto(self.wp_type, "a")
-        self.action_dto.set_parameters([r, s, d])
+        self.action_dto.parameters = [r, s, d]
         result = self.action_dao._save(self.action_dto)
         self.assertFalse(result)
 
@@ -159,8 +157,7 @@ class TestActionDao(unittest.TestCase):
 
     def test_action_dao_update_true(self):
         self.action_dao._save(self.action_dto)
-        self.action_dto.get_effects()[0].set_time(
-            ConditionEffectDto.AT_END)
+        self.action_dto.effects[0].time = ConditionEffectDto.AT_END
         result = self.action_dao._update(self.action_dto)
         self.assertTrue(result)
         self.action_dto = self.action_dao.get("navigation")
@@ -194,12 +191,12 @@ class TestActionDao(unittest.TestCase):
         self.assertTrue(result)
 
     def test_action_dao_normal_action(self):
-        self.action_dto.set_durative(False)
-        self.condition_1.set_time("")
-        self.condition_2.set_time("")
-        self.effect_1.set_time("")
-        self.effect_2.set_time("")
-        self.effect_3.set_time("")
+        self.action_dto.durative = False
+        self.condition_1.time = ""
+        self.condition_2.time = ""
+        self.effect_1.time = ""
+        self.effect_2.time = ""
+        self.effect_3.time = ""
 
         self.action_dao._save(self.action_dto)
         result = self.action_dao._update(self.action_dto)
@@ -243,8 +240,8 @@ class TestActionDao(unittest.TestCase):
         self.action_dao._save(self.action_dto)
 
         self.action_dto = self.action_dao.get("navigation")
-        self.action_dto.get_conditions()[0].get_fluent().set_name("bot_at")
-        self.action_dto.get_parameters()[0].get_type().set_name("bot")
+        self.action_dto.conditions[0].fluent.name = "bot_at"
+        self.action_dto.parameters[0].type.name = "bot"
 
         self.assertEqual("""\
 (:durative-action navigation

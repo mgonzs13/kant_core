@@ -27,7 +27,7 @@ class MongoFluentDao(FluentDao, MongoDao):
 
         self._me_type_dao = MongoTypeDao(uri, connect=False)
 
-    def _model_to_dto(self, fluent_model: FluentModel) -> FluentDto:
+    def _model_to_dto(fluent_model: FluentModel) -> FluentDto:
         """ convert a Mongoengine fluent document into a FluentDto
 
         Args:
@@ -40,7 +40,7 @@ class MongoFluentDao(FluentDao, MongoDao):
         type_dto_list = []
 
         for type_model in fluent_model.types:
-            type_dto = self._me_type_dao._model_to_dto(type_model)
+            type_dto = MongoTypeDao._model_to_dto(type_model)
             type_dto_list.append(type_dto)
 
         fluent_dto = FluentDto(
@@ -50,7 +50,7 @@ class MongoFluentDao(FluentDao, MongoDao):
 
         return fluent_dto
 
-    def _dto_to_model(self, fluent_dto: FluentDto) -> FluentModel:
+    def _dto_to_model(fluent_dto: FluentDto) -> FluentModel:
         """ convert a FluentDto into a Mongoengine fluent document
 
         Args:
@@ -62,13 +62,12 @@ class MongoFluentDao(FluentDao, MongoDao):
 
         fluent_model = FluentModel()
 
-        fluent_model.name = fluent_dto.get_name()
-        fluent_model.is_numeric = fluent_dto.get_is_numeric()
+        fluent_model.name = fluent_dto.name
+        fluent_model.is_numeric = fluent_dto.is_numeric
 
-        for type_dto in fluent_dto.get_types():
+        for type_dto in fluent_dto.types:
 
-            type_model = self._me_type_dao._dto_to_model(
-                type_dto)
+            type_model = MongoTypeDao._dto_to_model(type_dto)
 
             fluent_model.types.append(type_model)
 
@@ -98,8 +97,7 @@ class MongoFluentDao(FluentDao, MongoDao):
             Document: Mongoengine fluent document
         """
 
-        fluent_model = FluentModel.objects(
-            name=fluent_dto.get_name())
+        fluent_model = FluentModel.objects(name=fluent_dto.name)
 
         if not fluent_model:
             return None
@@ -117,13 +115,12 @@ class MongoFluentDao(FluentDao, MongoDao):
             FluentDto: FluentDto of the fluent name
         """
 
-        fluent_model = FluentModel.objects(
-            name=fluent_name)
+        fluent_model = FluentModel.objects(name=fluent_name)
 
         # check if fluent exist
         if fluent_model:
             fluent_model = fluent_model[0]
-            fluent_dto = self._model_to_dto(
+            fluent_dto = MongoFluentDao._model_to_dto(
                 fluent_model)
             return fluent_dto
 
@@ -139,7 +136,7 @@ class MongoFluentDao(FluentDao, MongoDao):
         fluent_dto_list = []
 
         for ele in fluent_model:
-            fluent_dto = self._model_to_dto(ele)
+            fluent_dto = MongoFluentDao._model_to_dto(ele)
             fluent_dto_list.append(fluent_dto)
 
         return fluent_dto_list
@@ -158,11 +155,11 @@ class MongoFluentDao(FluentDao, MongoDao):
         if self._exist_in_mongo(fluent_dto):
             return False
 
-        fluent_model = self._dto_to_model(
+        fluent_model = MongoFluentDao._dto_to_model(
             fluent_dto)
 
         # propagating saving
-        for type_dto in fluent_dto.get_types():
+        for type_dto in fluent_dto.types:
             if not self._me_type_dao.save(type_dto):
                 return False
 
@@ -187,12 +184,12 @@ class MongoFluentDao(FluentDao, MongoDao):
         if fluent_model:
 
             # propagating saving
-            for type_dto in fluent_dto.get_types():
+            for type_dto in fluent_dto.types:
                 if not self._me_type_dao.save(type_dto):
                     return False
 
             # updating
-            new_fluent_model = self._dto_to_model(
+            new_fluent_model = MongoFluentDao._dto_to_model(
                 fluent_dto)
             fluent_model.name = new_fluent_model.name
             fluent_model.types = new_fluent_model.types
