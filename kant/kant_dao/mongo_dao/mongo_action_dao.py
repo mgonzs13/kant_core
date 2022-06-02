@@ -4,13 +4,13 @@
 
 from typing import List
 
-from kant.kant_dao.dao_interface import ActionDao, fluent_dao
+from kant.kant_dao.dao_interface import ActionDao
 from kant.kant_dao.mongo_dao import(
     MongoDao,
+    MongoFactDao,
     MongoTypeDao,
     MongoFluentDao
 )
-
 
 from kant.kant_dao.mongo_dao.mongo_models import (
     ActionModel,
@@ -19,7 +19,6 @@ from kant.kant_dao.mongo_dao.mongo_models import (
 )
 
 from kant.kant_dto import (
-    TypeDto,
     ConditionEffectDto,
     ActionDto,
     ObjectDto
@@ -35,8 +34,7 @@ class MongoActionDao(ActionDao, MongoDao):
         MongoDao.__init__(self, uri, connect)
 
         self._me_type_dao = MongoTypeDao(uri, connect=False)
-        self._me_fluent_dao = MongoFluentDao(
-            uri, connect=False)
+        self._me_fluent_dao = MongoFluentDao(uri, connect=False)
 
     def __condition_effect_model_to_dto(self,
                                         condition_effect_model: ConditionEffectModel,
@@ -304,7 +302,7 @@ class MongoActionDao(ActionDao, MongoDao):
             bool: condition/effect is correct?
         """
 
-       # check if proposition is correct
+       # check if fact is correct
         if(len(condition_effect_dto.get_objects()) !=
            len(condition_effect_dto.get_fluent().get_types())):
             return False
@@ -319,14 +317,14 @@ class MongoActionDao(ActionDao, MongoDao):
                 return False
 
             # check if condition/effect object type is correct
-            if object_dto.get_type() != type_dto:
+            if not MongoFactDao._check_type_dto(object_dto.get_type(), type_dto):
                 return False
 
         return True
 
     def _check_action_dto(self, action_dto: ActionDto) -> bool:
         """ check if a ActionDto is correct:
-            condition and effect must be correct (same as proposition)
+            condition and effect must be correct (similar to fact)
 
         Args:
             action_dto (ActionDto): ActionDto to check
@@ -365,7 +363,7 @@ class MongoActionDao(ActionDao, MongoDao):
             bool: condition/effect is correct?
         """
 
-        # check if proposition is correct
+        # check if fact is correct
         if(len(condition_effect_model.parameters) !=
            len(condition_effect_model.fluent.types)):
             return False
@@ -378,15 +376,15 @@ class MongoActionDao(ActionDao, MongoDao):
             if not parameter_model in parameter_models:
                 return False
 
-            # check if proposition is correct
-            if parameter_model.type.name != type_model.name:
+            # check if fact is correct
+            if not MongoFactDao._check_type_model(parameter_model.type, type_model):
                 return False
 
         return True
 
     def _check_action_model(self, action_model: ActionModel) -> bool:
         """ check if a ActionDto is correct:
-            condition and effect must be correct (same as proposition)
+            condition and effect must be correct (similar to fact)
 
         Args:
             action_dto (ActionDto): ActionDto to check

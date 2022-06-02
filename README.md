@@ -4,7 +4,7 @@
   <img src="./images/logo.png" width="50%" />
 </p>
 
-This is a Python tool to manage PDDL-based knowledge. It is based on several software design patterns (DTO, DAO, Factory).
+This is a Python tool to manage knowledge. It is based on several software design patterns (DTO, DAO, Factory).
 
 ## Table of Contents
 
@@ -21,14 +21,14 @@ This is a Python tool to manage PDDL-based knowledge. It is based on several sof
 
 There are two DAO families implemented:
 
-- `MONGO`: this is a DAO family that uses MongoDB to storage the PDDL knowledge. Besides, the Mongoengine Python library is used to access MongoDB.
+- `MONGO`: this is a DAO family that uses MongoDB to storage the knowledge. Besides, the Mongoengine Python library is used to access MongoDB.
 
-PDDL elements (DTOs) that can be used are:
+Elements (DTOs) that can be used are:
 
 - types
 - objects
-- predicates
-- propositions
+- fluents (bool and numeric)
+- facts
 - goals
 - actions (and durative)
 

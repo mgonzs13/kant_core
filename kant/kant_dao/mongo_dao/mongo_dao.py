@@ -52,11 +52,11 @@ class MongoDao(ABC):
         """
 
     @abstractmethod
-    def _model_to_dto(self, pddl_mongoengine: Document) -> Dto:
+    def _model_to_dto(self, model: Document) -> Dto:
         """ convert a Mongoengine document into a Dto
 
         Args:
-            pddl_mongoengine (Document): Mongoengine document
+            model (Document): Mongoengine document
 
         Returns:
             Dto: Dto

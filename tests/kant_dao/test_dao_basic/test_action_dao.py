@@ -18,11 +18,12 @@ class TestActionDao(unittest.TestCase):
         self.fluent_dao = dao_factory.create_fluent_dao()
         self.action_dao = dao_factory.create_action_dao()
 
+        self.object_type = TypeDto("object")
         self.robot_type = TypeDto("robot", TypeDto("object"))
         self.wp_type = TypeDto("wp")
 
-        self.robot_at = FluentDto(
-            "robot_at", [self.robot_type, self.wp_type])
+        self.at = FluentDto(
+            "at", [self.object_type, self.wp_type])
         self.battery_level = FluentDto(
             "battery_level", [self.robot_type], is_numeric=True)
 
@@ -30,7 +31,7 @@ class TestActionDao(unittest.TestCase):
         s = ObjectDto(self.wp_type, "s")
         d = ObjectDto(self.wp_type, "d")
 
-        self.condition_1 = ConditionEffectDto(self.robot_at,
+        self.condition_1 = ConditionEffectDto(self.at,
                                               [r, s],
                                               time=ConditionEffectDto.AT_START,
                                               value=True)
@@ -41,12 +42,12 @@ class TestActionDao(unittest.TestCase):
                                               condition_effect=ConditionEffectDto.GREATER,
                                               value=30.00)
 
-        self.effect_1 = ConditionEffectDto(self.robot_at,
+        self.effect_1 = ConditionEffectDto(self.at,
                                            [r, s],
                                            time=ConditionEffectDto.AT_START,
                                            value=False)
 
-        self.effect_2 = ConditionEffectDto(self.robot_at,
+        self.effect_2 = ConditionEffectDto(self.at,
                                            [r, d],
                                            time=ConditionEffectDto.AT_END,
                                            value=True)
@@ -141,12 +142,12 @@ class TestActionDao(unittest.TestCase):
 \t:parameters ( ?r - robot ?s - wp ?d - wp)
 \t:duration (= ?duration 10)
 \t:condition (and
-\t\t(at start (robot_at ?r ?s))
+\t\t(at start (at ?r ?s))
 \t\t(at start (> (battery_level ?r) 30.00))
 \t)
 \t:effect (and
-\t\t(at start (not (robot_at ?r ?s)))
-\t\t(at end (robot_at ?r ?d))
+\t\t(at start (not (at ?r ?s)))
+\t\t(at end (at ?r ?d))
 \t\t(at end (decrease (battery_level ?r) 10.00))
 \t)
 )""",
@@ -168,12 +169,12 @@ class TestActionDao(unittest.TestCase):
 \t:parameters ( ?r - robot ?s - wp ?d - wp)
 \t:duration (= ?duration 10)
 \t:condition (and
-\t\t(at start (robot_at ?r ?s))
+\t\t(at start (at ?r ?s))
 \t\t(at start (> (battery_level ?r) 30.00))
 \t)
 \t:effect (and
-\t\t(at end (not (robot_at ?r ?s)))
-\t\t(at end (robot_at ?r ?d))
+\t\t(at end (not (at ?r ?s)))
+\t\t(at end (at ?r ?d))
 \t\t(at end (decrease (battery_level ?r) 10.00))
 \t)
 )""",
@@ -209,12 +210,12 @@ class TestActionDao(unittest.TestCase):
 (:action navigation
 \t:parameters ( ?r - robot ?s - wp ?d - wp)
 \t:precondition (and
-\t\t(robot_at ?r ?s)
+\t\t(at ?r ?s)
 \t\t(> (battery_level ?r) 30.00)
 \t)
 \t:effect (and
-\t\t(not (robot_at ?r ?s))
-\t\t(robot_at ?r ?d)
+\t\t(not (at ?r ?s))
+\t\t(at ?r ?d)
 \t\t(decrease (battery_level ?r) 10.00)
 \t)
 )""",

@@ -110,8 +110,8 @@ class FactDto(Dto):
     def __str__(self) -> str:
         string = "(" + self._fluent.get_name()
 
-        for pddl_object in self._objects:
-            string += " " + pddl_object.get_name()
+        for object in self._objects:
+            string += " " + object.get_name()
 
         string += ")"
 
@@ -129,9 +129,9 @@ class FactDto(Dto):
             if not len(other.get_objects()) == len(self.get_objects()):
                 return False
 
-            for pddl_object, other_pddl_object in zip(self.get_objects(),
-                                                      other.get_objects()):
-                if not pddl_object == other_pddl_object:
+            for object, other_object in zip(self.get_objects(),
+                                            other.get_objects()):
+                if not object == other_object:
                     return False
 
             return True

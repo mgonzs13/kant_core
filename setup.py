@@ -3,7 +3,7 @@ setup(
     name="kant",
     packages=find_packages(),
     version="1.0.0",
-    description="Knowledge mAnagemeNT for PDDL",
+    description="Knowledge mAnagemeNT",
     author="Miguel Á. González-Santamarta",
     license="GPL-3.0",
     install_requires=["mongoengine==0.23.1", "dnspython==2.0.0"],

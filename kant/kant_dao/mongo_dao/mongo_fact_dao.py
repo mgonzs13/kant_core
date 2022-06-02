@@ -1,7 +1,7 @@
 
 """ Mongo Fact Dao """
 
-from typing import List
+from typing import List, Dict
 
 from kant.kant_dao.dao_interface import FactDao
 from kant.kant_dao.mongo_dao import (
@@ -11,10 +11,12 @@ from kant.kant_dao.mongo_dao import (
 )
 
 from kant.kant_dao.mongo_dao.mongo_models import (
-    FactModel
+    FactModel,
+    TypeModel
 )
 
 from kant.kant_dto import FactDto
+from kant.kant_dto.type_dto import TypeDto
 
 
 class MongoFactDao(FactDao, MongoDao):
@@ -28,6 +30,26 @@ class MongoFactDao(FactDao, MongoDao):
         self._me_object_dao = MongoObjectDao(uri, connect=False)
         self._me_fluent_dao = MongoFluentDao(
             uri, connect=False)
+
+    @staticmethod
+    def _check_type_model(type_model_1: TypeModel, type_model_2: TypeModel) -> bool:
+        """ check if a type is or inherit from another type
+
+          Args:
+              type_dto_1 (TypeModel): type to check
+              type_dto_2 (TypeModel): target type
+
+          Returns:
+              bool: is or inherit?
+        """
+
+        if type_model_1.name == type_model_2.name:
+            return True
+        else:
+            if not type_model_1.father is None:
+                return MongoFactDao._check_type_model(type_model_1.father, type_model_2)
+            else:
+                return False
 
     def _check_fact_model(self, fact_model: FactModel) -> bool:
         """ check if the types of the objects of a fact model are
@@ -51,10 +73,25 @@ class MongoFactDao(FactDao, MongoDao):
         for object_model, type_model in zip(object_models, type_models):
 
             # check if fact is correct
-            if object_model.type.name != type_model.name:
+            if not MongoFactDao._check_type_model(object_model.type, type_model):
                 return False
 
         return True
+
+    @staticmethod
+    def _add_fathers(type_dto: TypeDto, type_dict: Dict[str, TypeDto]) -> None:
+        """ add recursively type fathers to a dictionary
+
+        Args:
+            type_dto (TypeDto): starter type
+            type_dict (Dict[str, TypeDto]): dictionary
+        """
+
+        if not type_dto.get_name() in type_dict:
+            type_dict[type_dto.get_name()] = type_dto
+
+        if not type_dto.get_father() is None:
+            MongoFactDao._add_fathers(type_dto.get_father(), type_dict)
 
     def _model_to_dto(self, fact_model: FactModel) -> FactDto:
         """ convert a Mongoengine type document into a FactDto
@@ -80,7 +117,10 @@ class MongoFactDao(FactDao, MongoDao):
             object_dto = self._me_object_dao._model_to_dto(
                 object_model)
 
-            object_dto.set_type(type_dict[object_dto.get_type().get_name()])
+            self._add_fathers(object_dto.get_type(), type_dict)
+
+            object_dto.set_type(
+                type_dict[object_dto.get_type().get_name()])
 
             object_list.append(object_dto)
 
@@ -96,6 +136,26 @@ class MongoFactDao(FactDao, MongoDao):
             fact_dto.set_value(fact_model.bool_value)
 
         return fact_dto
+
+    @staticmethod
+    def _check_type_dto(type_dto_1: TypeDto, type_dto_2: TypeDto) -> bool:
+        """ check if a type is or inherit from another type
+
+        Args:
+            type_dto_1 (TypeDto): type to check
+            type_dto_2 (TypeDto): target type
+
+        Returns:
+            bool: is or inherit?
+        """
+
+        if type_dto_1 == type_dto_2:
+            return True
+        else:
+            if not type_dto_1.get_father() is None:
+                return MongoFactDao._check_type_dto(type_dto_1.get_father(), type_dto_2)
+            else:
+                return False
 
     def _check_fact_dto(self, fact_dto: FactDto) -> bool:
         """ check if the types of the objects of a fact dto are
@@ -119,7 +179,7 @@ class MongoFactDao(FactDao, MongoDao):
         for object_dto, type_dto in zip(object_dtos, type_dtos):
 
             # check if fact is correct
-            if object_dto.get_type() != type_dto:
+            if not MongoFactDao._check_type_dto(object_dto.get_type(), type_dto):
                 return False
 
         return True

@@ -18,11 +18,12 @@ class TestFactDao(unittest.TestCase):
         self.fluent_dao = dao_factory.create_fluent_dao()
         self.fact_dao = dao_factory.create_fact_dao()
 
-        self.robot_type = TypeDto("robot", father=TypeDto("object"))
+        self.object_type = TypeDto("object")
+        self.robot_type = TypeDto("robot", father=self.object_type)
         self.wp_type = TypeDto("wp")
 
-        self.robot_at = FluentDto(
-            "robot_at", [self.robot_type, self.wp_type])
+        self.at = FluentDto(
+            "at", [self.object_type, self.wp_type])
         self.battery_level = FluentDto(
             "battery_level", [self.robot_type], is_numeric=True)
 
@@ -30,7 +31,7 @@ class TestFactDao(unittest.TestCase):
         self.wp1 = ObjectDto(self.wp_type, "wp1")
 
         self.fact_dto = FactDto(
-            self.robot_at, [self.rb1, self.wp1])
+            self.at, [self.rb1, self.wp1])
         self.bat_fact_dto = FactDto(
             self.battery_level, [self.rb1], value=100)
 
@@ -55,8 +56,8 @@ class TestFactDao(unittest.TestCase):
                          str(self.fact_dao.get_functions()[0]))
 
     def test_fact_dao_save_true_no_objects(self):
-        self.robot_at = FluentDto("robot_at")
-        self.fact_dto = FactDto(self.robot_at)
+        self.at = FluentDto("at")
+        self.fact_dto = FactDto(self.at)
         result = self.fact_dao._save(self.fact_dto)
         self.assertTrue(result)
         self.assertEqual(1, len(self.fact_dao.get_all()))
@@ -78,22 +79,22 @@ class TestFactDao(unittest.TestCase):
 
     def test_fact_dao_get_by_fluent_empty(self):
         self.fact_dto = self.fact_dao.get_by_fluent(
-            "robot_at")
+            "at")
         self.assertEqual([], self.fact_dto)
 
     def test_fact_dao_get_by_fluent(self):
         self.fact_dao._save(self.fact_dto)
 
-        self.fact_dto = self.fact_dao.get_by_fluent("robot_at")[
+        self.fact_dto = self.fact_dao.get_by_fluent("at")[
             0]
-        self.assertEqual("(robot_at rb1 wp1)",
+        self.assertEqual("(at rb1 wp1)",
                          str(self.fact_dto))
 
     def test_fact_dao_get_goals(self):
         self.fact_dto.set_is_goal(True)
         self.fact_dao._save(self.fact_dto)
         self.fact_dto = self.fact_dao.get_goals()[0]
-        self.assertEqual("(robot_at rb1 wp1)",
+        self.assertEqual("(at rb1 wp1)",
                          str(self.fact_dto))
 
     def test_fact_dao_get_goals_empty(self):
@@ -105,7 +106,7 @@ class TestFactDao(unittest.TestCase):
     def test_fact_dao_get_no_goals(self):
         self.fact_dao._save(self.fact_dto)
         self.fact_dto = self.fact_dao.get_no_goals()[0]
-        self.assertEqual("(robot_at rb1 wp1)",
+        self.assertEqual("(at rb1 wp1)",
                          str(self.fact_dto))
 
     def test_fact_dao_get_no_goals_empty(self):
@@ -122,9 +123,9 @@ class TestFactDao(unittest.TestCase):
         self.fact_dao._save(self.fact_dto)
         result = self.fact_dao._update(self.fact_dto)
         self.assertTrue(result)
-        self.fact_dto = self.fact_dao.get_by_fluent("robot_at")[
+        self.fact_dto = self.fact_dao.get_by_fluent("at")[
             0]
-        self.assertEqual("(robot_at rb1 wp1)",
+        self.assertEqual("(at rb1 wp1)",
                          str(self.fact_dto))
 
     def test_fact_dao_update_flase_fact_not_exists(self):
@@ -154,7 +155,7 @@ class TestFactDao(unittest.TestCase):
         result = self.fact_dao.delete(self.fact_dto)
         self.assertTrue(result)
         self.fact_dto = self.fact_dao.get_by_fluent(
-            "robot_at")
+            "at")
         self.assertEqual(0, len(self.fact_dto))
 
     def test_fact_dao_delete_all(self):
@@ -162,11 +163,11 @@ class TestFactDao(unittest.TestCase):
         result = self.fact_dao.delete_all()
         self.assertTrue(result)
         self.fact_dto = self.fact_dao.get_by_fluent(
-            "robot_at")
+            "at")
         self.assertEqual(0, len(self.fact_dto))
 
     def test_fact_dao_modify_type(self):
-        self.fact_dao.save(self.fact_dto)
-        self.fact_dto = self.fact_dao.get_by_fluent("robot_at")[0]
+        self.fact_dao.save(self.bat_fact_dto)
+        self.fact_dto = self.fact_dao.get_by_fluent("battery_level")[0]
         self.fact_dto.get_fluent().get_types()[0].set_name("bot")
         self.assertEqual("rb1 - bot", str(self.fact_dto.get_objects()[0]))
