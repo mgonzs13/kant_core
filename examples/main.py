@@ -12,13 +12,12 @@ DaoFactoryMethod(DaoFamilies.MONGO,
 
 # locations
 wp1 = Location("wp1", 1.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0)
-wp1.save()
 
 # robot
 rb1 = Robot("rb1")
-rb1.robot_at = Location.get("wp1")
-rb1.save()
+rb1.at = Location.get("wp1")
 
 # print
 rb1 = Robot.get("rb1")
 print(rb1)
+print(rb1.at)
