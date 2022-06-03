@@ -60,6 +60,7 @@ $ sudo python3 setup.py install
 ## Tests
 
 ```shell
+$ sudo service mongod start
 $ python3 setup.py pytests
 ```
 
