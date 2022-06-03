@@ -13,7 +13,8 @@ This is a Python tool to manage knowledge. It is based on several software desig
    - [MongoDB](#mongodb)
    - [Mongo Compass (Optional)](#mongo-compass-optional)
    - [KANT](#kant)
-3. [Demos](#demos)
+3. [Tests](#tests)
+4. [Demos](#demos)
 
 ## Features
 
@@ -54,6 +55,12 @@ https://docs.mongodb.com/compass/master/install/
 $ git git@github.com:mgonzs13/kant_core.git
 $ cd ~/kant_core
 $ sudo python3 setup.py install
+```
+
+## Tests
+
+```shell
+$ python3 setup.py pytests
 ```
 
 ## Demos
