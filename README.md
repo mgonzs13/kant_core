@@ -15,6 +15,7 @@ This is a Python tool to manage knowledge. It is based on several software desig
    - [KANT](#kant)
 3. [Tests](#tests)
 4. [Demos](#demos)
+5. [Citations](#citations)
 
 ## Features
 
@@ -162,4 +163,41 @@ fact_dao.save(battery_level_fact)
 fact_dao.save(goal_dto)
 
 action_dao.save(action_dto)
+```
+
+## Citations
+
+```bibtex
+@InProceedings{10.1007/978-3-031-06527-9_45,
+    author="Gonz{\'a}lez-Santamarta, Miguel {\'A}.
+    and Rodr{\'i}guez-Lera, Francisco J.
+    and Mart{\'i}n, Francisco
+    and Fern{\'a}ndez, Camino
+    and Matell{\'a}n, Vicente",
+    editor="Ferr{\'a}ndez Vicente, Jos{\'e} Manuel
+    and {\'A}lvarez-S{\'a}nchez, Jos{\'e} Ram{\'o}n
+    and de la Paz L{\'o}pez, F{\'e}lix
+    and Adeli, Hojjat",
+    title="KANT: A Tool for Grounding and Knowledge Management",
+    booktitle="Bio-inspired Systems and Applications: from Robotics to Ambient Intelligence",
+    year="2022",
+    publisher="Springer International Publishing",
+    address="Cham",
+    pages="452--461",
+    abstract="The roboticist community divides the knowledge representation and decision-making in the symbolic and sub-symbolic fields. Thus, real-world robotics grounded representation requires specific software techniques for landing continuous and discrete state variables in both fields. This research designs and develops an Open Source tool called KANT (Knowledge mAnagemeNT). It will be used to translate sub-symbolic properties and attributes from the robot environment to a symbolic paradigm in the Knowledge Base, in particular to PDDL. Based on Python, KANT includes mechanisms to enhance the process of knowledge manipulation in real-world scenarios through the use of in-memory or non-SQL databases, which would mean a time enhancement of around 30{\%} of total time in middleware such as ROS 2.",
+    isbn="978-3-031-06527-9"
+}
+```
+
+```bibtex
+@misc{https://doi.org/10.48550/arxiv.2204.08495,
+    doi = {10.48550/ARXIV.2204.08495},
+    url = {https://arxiv.org/abs/2204.08495},
+    author = {González-Santamarta, Miguel Á. and Rodríguez-Lera, Francisco J. and Martín, Francisco and Fernández, Camino and Matellán, Vicente},
+    keywords = {Robotics (cs.RO), FOS: Computer and information sciences, FOS: Computer and information sciences},
+    title = {KANT: A tool for Grounding and Knowledge Management},
+    publisher = {arXiv},
+    year = {2022},
+    copyright = {Creative Commons Attribution Non Commercial No Derivatives 4.0 International}
+}
 ```
