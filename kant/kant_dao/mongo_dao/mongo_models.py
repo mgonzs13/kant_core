@@ -1,11 +1,22 @@
 
 """ Mongo models"""
 
-from unittest.mock import mock_open
 import mongoengine
+import datetime
 
 
-class TypeModel(mongoengine.Document):
+class BaseModel:
+    creation_date = mongoengine.DateTimeField(default=datetime.datetime.now)
+    update_date = mongoengine.DateTimeField(default=datetime.datetime.now)
+
+    def save(self, *args, **kwargs):
+        if not self.creation_date:
+            self.creation_date = datetime.datetime.now()
+        self.update_date = datetime.datetime.now()
+        return super(BaseModel, self).save(*args, **kwargs)
+
+
+class TypeModel(mongoengine.Document, BaseModel):
     """ type model """
 
     meta = {"collection": "type"}
@@ -14,7 +25,7 @@ class TypeModel(mongoengine.Document):
         "self", reverse_delete_rule=mongoengine.DO_NOTHING)
 
 
-class ObjectModel(mongoengine.Document):
+class ObjectModel(mongoengine.Document, BaseModel):
     """ object model """
 
     meta = {"collection": "object"}
@@ -23,7 +34,7 @@ class ObjectModel(mongoengine.Document):
         TypeModel, reverse_delete_rule=mongoengine.CASCADE)
 
 
-class FluentModel(mongoengine.Document):
+class FluentModel(mongoengine.Document, BaseModel):
     """ predicate model """
 
     meta = {"collection": "fluent"}
@@ -34,7 +45,7 @@ class FluentModel(mongoengine.Document):
                                    reverse_delete_rule=mongoengine.CASCADE))
 
 
-class FactModel(mongoengine.Document):
+class FactModel(mongoengine.Document, BaseModel):
     """ proposition model """
 
     meta = {"collection": "fact"}
@@ -74,7 +85,7 @@ class ConditionEffectModel(mongoengine.EmbeddedDocument):
     parameters = mongoengine.EmbeddedDocumentListField(ParameterModel)
 
 
-class ActionModel(mongoengine.Document):
+class ActionModel(mongoengine.Document, BaseModel):
     """ action model """
 
     meta = {"collection": "action"}
